@@ -4,7 +4,7 @@ import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import { Link } from "expo-router";
 
-const signIn = () => {
+const SignIn = () => {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -74,4 +74,4 @@ const signIn = () => {
     );
 }
 
-export default signIn;
+export default SignIn;
