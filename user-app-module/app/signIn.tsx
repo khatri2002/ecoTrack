@@ -2,6 +2,7 @@ import { Image, Text, View } from "react-native";
 import Logo from "../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
+import { Link } from "expo-router";
 
 const signIn = () => {
 
@@ -45,10 +46,10 @@ const signIn = () => {
                         />
                     </View>
 
-                    <Button 
-                        className="mt-5 py-1 w-3/4 mx-auto" 
+                    <Button
+                        className="mt-5 py-1 w-3/4 mx-auto"
                         mode="contained"
-                        onPress={() => {}}>
+                        onPress={() => { }}>
                         <Text className="text-lg font-medium">Login</Text>
                     </Button>
                     <Button className="mt-3">
@@ -62,9 +63,11 @@ const signIn = () => {
                     <Text className="text-gray-500 text-center text-base font-medium">
                         New to ecoTrack?
                     </Text>
-                    <Text className="text-center text-primary-700 text-base font-medium underline mt-1">
-                        Create an account
-                    </Text>
+                    <Link href="/signUp">
+                        <Text className="text-center text-primary-700 text-base font-medium underline mt-1">
+                            Create an account
+                        </Text>
+                    </Link>
                 </View>
             </View>
         </>

@@ -16,9 +16,10 @@ const RootLayout = () => {
         <>
             <PaperProvider theme={theme}>
                 <SafeAreaView className="flex-1">
-                    <Stack>
-                        <Stack.Screen name="index" options={{ headerShown: false }} />
-                        <Stack.Screen name="signIn" options={{ headerShown: false }} />
+                    <Stack screenOptions={{headerShown: false}}>
+                        <Stack.Screen name="index" />
+                        <Stack.Screen name="signIn" />
+                        <Stack.Screen name="signUp" />
                     </Stack>
                 </SafeAreaView>
             </PaperProvider>
