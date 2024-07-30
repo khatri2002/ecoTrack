@@ -14,14 +14,6 @@ type FormData = {
     confirmPassword: string
 }
 
-type PasswordValidationErrors = {
-    hasLowerCase?: string;
-    hasUpperCase?: string;
-    hasNumber?: string;
-    hasSpecialChar?: string;
-    hasLength?: string;
-}
-
 const SignUp = () => {
 
     const {
@@ -39,7 +31,9 @@ const SignUp = () => {
     }
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
+    // Password validation checks
     const regexChecks = [
         { regex: /[a-z]/, message: 'Must contain at least one lowercase letter' },
         { regex: /[A-Z]/, message: 'Must contain at least one uppercase letter' },
@@ -251,12 +245,18 @@ const SignUp = () => {
                                 <TextInput
                                     mode="outlined"
                                     label="Confirm Password"
+                                    secureTextEntry={!isConfirmPasswordVisible}
                                     onBlur={onBlur}
                                     onChangeText={(text) => {
                                         handleConfirmPasswordChange(text);
                                     }}
                                     value={value}
                                     error={errors.confirmPassword ? true : false}
+                                    right={
+                                        <TextInput.Icon
+                                            icon={isConfirmPasswordVisible ? "eye" : "eye-off"}
+                                            onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} />
+                                    }
                                 />
                             )}
                             name="confirmPassword"

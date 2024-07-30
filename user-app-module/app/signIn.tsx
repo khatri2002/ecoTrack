@@ -3,10 +3,26 @@ import Logo from "../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import { Link } from "expo-router";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+type FormData = {
+    email: string
+    password: string
+}
 
 const SignIn = () => {
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormData>();
+
+    const onSubmit: SubmitHandler<FormData> = (data) => {
+        console.log(data);
+    }
 
     return (
         <>
@@ -27,29 +43,59 @@ const SignIn = () => {
                         </Text>
                     </View>
 
-                    <View>
-                        <TextInput
-                            mode="outlined"
-                            label="Email"
-                            right={<TextInput.Icon icon="email" />}
-                        />
-                        <TextInput
-                            className="mt-1"
-                            mode="outlined"
-                            secureTextEntry={!isPasswordVisible}
-                            label="Password"
-                            right={
-                                <TextInput.Icon
-                                    icon={isPasswordVisible ? "eye" : "eye-off"}
-                                    onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
-                            }
-                        />
+                    <View className="flex-col gap-y-1">
+                        <View>
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                    pattern: /\S+@\S+\.\S+/,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        mode="outlined"
+                                        label="Email"
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        error={errors.email ? true : false}
+                                        right={<TextInput.Icon icon="email" />}
+                                    />
+                                )}
+                                name="email"
+                            />
+                        </View>
+                        <View>
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        mode="outlined"
+                                        label="Password"
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        error={errors.password ? true : false}
+                                        right={
+                                            <TextInput.Icon
+                                                icon={isPasswordVisible ? "eye" : "eye-off"}
+                                                onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
+                                        }
+                                    />
+                                )}
+                                name="password"
+                            />
+                        </View>
                     </View>
 
                     <Button
                         className="mt-5 py-1 w-3/4 mx-auto"
                         mode="contained"
-                        onPress={() => { }}>
+                        onPress={handleSubmit(onSubmit)}
+                    >
                         <Text className="text-lg font-medium">Login</Text>
                     </Button>
                     <Button className="mt-3">
