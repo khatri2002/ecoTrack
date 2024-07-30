@@ -23,6 +23,7 @@ const RootLayout = () => {
                             <Stack.Screen name="signIn" />
                             <Stack.Screen name="signUp" />
                             <Stack.Screen name="otp_SignIn" />
+                            <Stack.Screen name="verify-otp/[email]" />
                         </Stack>
                     </SafeAreaView>
                 </TouchableWithoutFeedback>
