@@ -1,7 +1,7 @@
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, Touchable, TouchableHighlight, View } from "react-native";
 import Logo from "../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 
@@ -15,6 +15,8 @@ type FormData = {
 }
 
 const SignUp = () => {
+
+    const router = useRouter();
 
     const {
         control,
@@ -283,11 +285,19 @@ const SignUp = () => {
                     <Text className="text-gray-500 text-center text-base font-medium">
                         Already having account?
                     </Text>
-                    <Link href="/signIn">
-                        <Text className="text-center text-primary-700 text-base font-medium underline mt-1">
-                            Sign In
-                        </Text>
-                    </Link>
+
+                    <View className="flex-row justify-center mt-1">
+                        <TouchableHighlight
+                            activeOpacity={0.9}
+                            underlayColor="#DDDDDD"
+                            className="px-2 py-1 rounded-lg"
+                            onPress={() => router.navigate("signIn")}
+                        >
+                            <Text className="text-center text-primary-700 text-base font-medium underline">
+                                Sign In
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </ScrollView>
         </>

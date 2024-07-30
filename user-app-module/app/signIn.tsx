@@ -1,8 +1,8 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableHighlight, View } from "react-native";
 import Logo from "../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 type FormData = {
@@ -11,6 +11,8 @@ type FormData = {
 }
 
 const SignIn = () => {
+
+    const router = useRouter();
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -59,7 +61,9 @@ const SignIn = () => {
                                         onChangeText={onChange}
                                         value={value}
                                         error={errors.email ? true : false}
-                                        right={<TextInput.Icon icon="email" />}
+                                        right={
+                                            <TextInput.Icon icon="email" style={{ pointerEvents: "none" }} />
+                                        }
                                     />
                                 )}
                                 name="email"
@@ -96,24 +100,39 @@ const SignIn = () => {
                         mode="contained"
                         onPress={handleSubmit(onSubmit)}
                     >
-                        <Text className="text-lg font-medium">Login</Text>
+                        <Text className="text-lg font-medium">Sign In</Text>
                     </Button>
-                    <Button className="mt-3">
-                        <Text className="text-primary-700 text-base font-medium">
-                            Login using OTP
-                        </Text>
-                    </Button>
+
+                    <View className="flex-row justify-center mt-3">
+                        <TouchableHighlight
+                            activeOpacity={0.9}
+                            underlayColor="#DDDDDD"
+                            className="py-1 px-2 rounded-lg"
+                            onPress={() => router.navigate("otp_SignIn")}
+                        >
+                            <Text className="text-center text-primary-700 text-base font-medium">
+                                Sign In using OTP
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
 
                 <View>
                     <Text className="text-gray-500 text-center text-base font-medium">
                         New to ecoTrack?
                     </Text>
-                    <Link href="/signUp">
-                        <Text className="text-center text-primary-700 text-base font-medium underline mt-1">
-                            Create an account
-                        </Text>
-                    </Link>
+                    <View className="flex-row justify-center mt-1">
+                        <TouchableHighlight
+                            activeOpacity={0.9}
+                            underlayColor="#DDDDDD"
+                            className="px-2 py-1 rounded-lg"
+                            onPress={() => router.navigate("signUp")}
+                        >
+                            <Text className="text-center text-primary-700 text-base font-medium underline">
+                                Create an account
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
             </View>
         </>
