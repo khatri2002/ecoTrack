@@ -2,7 +2,7 @@ import { Image, ScrollView, Text, View } from "react-native";
 import Logo from "../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
 import { Link } from "expo-router";
-import { useForm, Controller, SubmitHandler, set } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useEffect } from "react";
 
 type FormData = {
@@ -34,41 +34,41 @@ const SignUp = () => {
         formState: { errors },
     } = useForm<FormData>();
 
-    const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+    const onSubmit: SubmitHandler<FormData> = (data) => {
+        console.log("allow submit");
+        console.log(errors);
+    }
+
+    const regexChecks = [
+        { regex: /^[A-Za-z0-9]+$/, message: 'Must contain only alphanumeric characters' },
+        { regex: /[A-Z]/, message: 'Must contain at least one uppercase letter' },
+        { regex: /[0-9]/, message: 'Must contain at least one number' },
+        { regex: /^.{8,}$/, message: 'Must be at least 8 characters long' },
+    ];
 
     const handlePasswordChange = (password: string) => {
         setValue('password', password);
-        let errorMessages: PasswordValidationErrors = {};
+        
+        const errors: string[] = [];
+        regexChecks.forEach(({ regex, message }) => {
+            if (!regex.test(password)) {
+                errors.push(message);
+            }
+        });
 
-        if (!/[a-z]/.test(password)) {
-            errorMessages.hasLowerCase = 'Must contain at least one lowercase character';
-        }
-        if (!/[A-Z]/.test(password)) {
-            errorMessages.hasUpperCase = 'Must contain at least one uppercase character';
-        }
-        if (!/\d/.test(password)) {
-            errorMessages.hasNumber = 'Must contain at least one number';
-        }
-        if (!/[!@#$%^&*]/.test(password)) {
-            errorMessages.hasSpecialChar = 'Must contain at least one special character';
-        }
-        if (password.length < 8) {
-            errorMessages.hasLength = 'Must contain at least 8 characters';
-        }
-
-        if(Object.keys(errorMessages).length === 0) {
-            clearErrors('password');
+        if (errors.length > 0) {
+            setError('password', { message: errors.join(',') });
         }
         else {
-            setError('password', {types: errorMessages});
+            clearErrors('password');
         }
     }
 
-    const handleConfirmPasswordChange = (confirmPassword: string) => { 
+    const handleConfirmPasswordChange = (confirmPassword: string) => {
         setValue('confirmPassword', confirmPassword);
 
-        if(confirmPassword != getValues('password')) {
-            setError('confirmPassword', {message: 'Passwords do not match'});
+        if (confirmPassword != getValues('password')) {
+            setError('confirmPassword', { message: 'Passwords do not match' });
         }
         else {
             clearErrors('confirmPassword');
@@ -77,7 +77,7 @@ const SignUp = () => {
 
     return (
         <>
-            <ScrollView className="flex-1 bg-white px-5">
+            <ScrollView className="flex-1 bg-white px-5" automaticallyAdjustKeyboardInsets={true}>
                 <Image
                     source={Logo}
                     className="w-44 h-44 mt-8 mx-auto"
@@ -93,8 +93,8 @@ const SignUp = () => {
                     </Text>
                 </View>
 
-                <View className="flex-col gap-y-2">
-                    <View className="flex-row gap-x-4">
+                <View className="flex-1 flex-col gap-y-2">
+                    <View className="flex-1 flex-row gap-x-4">
                         <View className="flex-1">
                             <Controller
                                 control={control}
@@ -140,7 +140,7 @@ const SignUp = () => {
                             />
                         </View>
                     </View>
-                    <View>
+                    <View className="flex-1">
                         <Controller
                             control={control}
                             rules={{
@@ -161,7 +161,7 @@ const SignUp = () => {
                             name="email"
                         />
                     </View>
-                    <View>
+                    <View className="flex-1">
                         <Controller
                             control={control}
                             rules={{
@@ -174,6 +174,7 @@ const SignUp = () => {
                                 <TextInput
                                     mode="outlined"
                                     label="Phone"
+                                    keyboardType="numeric"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
@@ -183,11 +184,17 @@ const SignUp = () => {
                             name="phone"
                         />
                     </View>
-                    <View>
+                    <View className="flex-1">
                         <Controller
                             control={control}
                             rules={{
                                 required: true,
+                                validate: () => {
+                                    if (errors.password) {
+                                        return errors.password.message;
+                                    }
+                                    return true;
+                                }
                             }}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <>
@@ -206,20 +213,31 @@ const SignUp = () => {
                             name="password"
                         />
                         {
-                            errors.password && errors.password.types && (
-                                Object.values(errors.password.types).map((error, index) => (
-                                    <Text key={index} className="text-red-700">
-                                        {error}
-                                    </Text>
-                                ))
+                            errors.password && errors.password.message &&
+                            (
+                                <View className="my-1">
+                                    {
+                                        errors.password.message.split(',').map((error: string, index: number) => (
+                                            <Text key={index} className="text-red-700">
+                                                {error}
+                                            </Text>
+                                        ))
+                                    }
+                                </View>
                             )
                         }
                     </View>
-                    <View>
+                    <View className="flex-1">
                         <Controller
                             control={control}
                             rules={{
                                 required: true,
+                                validate: () => {
+                                    if (errors.confirmPassword) {
+                                        return errors.confirmPassword.message;
+                                    }
+                                    return true;
+                                }
                             }}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
@@ -237,7 +255,7 @@ const SignUp = () => {
                         />
                         {
                             errors.confirmPassword && (
-                                <Text className="text-red-700">
+                                <Text className="text-red-700 my-1">
                                     {errors.confirmPassword.message}
                                 </Text>
                             )
