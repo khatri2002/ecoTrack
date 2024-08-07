@@ -98,7 +98,7 @@ const SignUp = () => {
                                 control={control}
                                 rules={{
                                     required: true,
-                                    minLength: 3,
+                                    minLength: 2,
                                     maxLength: 20,
                                     pattern: /^[A-Za-z]+$/i,
                                 }}
@@ -120,7 +120,7 @@ const SignUp = () => {
                                 control={control}
                                 rules={{
                                     required: true,
-                                    minLength: 3,
+                                    minLength: 2,
                                     maxLength: 20,
                                     pattern: /^[A-Za-z]+$/i,
                                 }}
