@@ -3,13 +3,14 @@ from pydantic import BaseModel, field_validator, EmailStr
 from typing import Annotated, List
 import re
 
+# user signUp request
+
 class UserSignUp(BaseModel):
     first_name: Annotated[str, Query(min_length=2, max_length=20, pattern="^[A-Za-z]+$")]
     last_name: Annotated[str, Query(min_length=2, max_length=20, pattern="^[A-Za-z]+$")]
     email: EmailStr
     phone: Annotated[str, Query(regex="^[0-9]{10}$")]
     password: Annotated[str, Query(min_length=8)]
-    otp: Annotated[str, Query(min_length=6, max_length=6)] | None = None
 
     @field_validator("password")
     @classmethod
@@ -28,6 +29,23 @@ class UserSignUp(BaseModel):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+class SignUpRequestOTP(UserSignUp):
+    pass
+
+class SignUpVerifyOTP(UserSignUp):
+    otp: Annotated[str, Query(min_length=6, max_length=6, regex="^[0-9]{6}$")]
+
+
+# user signIn request
+
 class UserSignIn(BaseModel):
     email: EmailStr
+
+class SignInPassword(UserSignIn):
     password: str
+
+class SignInRequestOTP(UserSignIn):
+    pass
+
+class SignInVerifyOTP(UserSignIn):
+    otp: Annotated[str, Query(min_length=6, max_length=6, regex="^[0-9]{6}$")]
