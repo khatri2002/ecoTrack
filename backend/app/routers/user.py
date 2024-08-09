@@ -1,11 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Annotated
 from starlette.responses import JSONResponse
 from datetime import datetime
-from pydantic import BaseModel
-import jwt
-from jwt.exceptions import InvalidTokenError
 import os
 from dotenv import load_dotenv
 

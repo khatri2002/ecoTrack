@@ -1,6 +1,6 @@
 from fastapi import Query
 from pydantic import BaseModel, field_validator, EmailStr
-from typing import Annotated, List
+from typing import Annotated
 import re
 
 # user signUp request
