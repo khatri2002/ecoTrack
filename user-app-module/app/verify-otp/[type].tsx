@@ -56,7 +56,6 @@ const VerifyOtp = () => {
           email: requestBody.email,
           otp: otp,
         };
-        console.log(requestBody_);
         response = await signInVerifyOTP(requestBody_ as SignInVerifyOTP);
       }
 
