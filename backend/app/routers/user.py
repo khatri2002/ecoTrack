@@ -1,10 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer
+from typing import Annotated
 from starlette.responses import JSONResponse
 from datetime import datetime
+from pydantic import BaseModel
+import jwt
+from jwt.exceptions import InvalidTokenError
+import os
+from dotenv import load_dotenv
 
-from app.models import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP
+load_dotenv()
+
+from app.models import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP, User
 from app.utils import generate_otp, get_text_hash, verify_text, create_access_token
 from app.db import user_collection, otp_collection
+from app.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -213,3 +223,7 @@ async def verify_otp(user: SignInVerifyOTP):
     access_token = create_access_token({"email": user.email})
 
     return JSONResponse(status_code=200, content={"access_token": access_token})
+
+@router.get("/getUser")
+async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user

@@ -6,6 +6,9 @@ import os
 
 load_dotenv()
 
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+
 def generate_otp():
     secret = pyotp.random_base32()
     totp = pyotp.TOTP(secret, digits=4)
@@ -23,5 +26,9 @@ def verify_text(plain_text: str, hashed_text: str):
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+def decode_access_token(token: str):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return payload

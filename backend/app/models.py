@@ -49,3 +49,14 @@ class SignInRequestOTP(UserSignIn):
 
 class SignInVerifyOTP(UserSignIn):
     otp: Annotated[str, Query(min_length=4, max_length=4, regex="^[0-9]{4}$")]
+
+
+# user dependency
+
+class User(BaseModel):
+    name: str
+    email: EmailStr
+    phone: str
+
+class TokenData(BaseModel):
+    email: str | None = None
