@@ -1,9 +1,12 @@
 import { Image, ScrollView, Text, Touchable, TouchableHighlight, View } from "react-native";
 import Logo from "../assets/ecoTrack_logo.png";
-import { Button, TextInput } from "react-native-paper";
+import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler, set } from "react-hook-form";
 import { useState } from "react";
+import { signUpRequestOTP } from "./lib/api";
+import { isCustomError } from "./lib/utils";
+import ErrorDialog from "./components/ErrorDialog";
 
 type FormData = {
     firstName: string
@@ -28,12 +31,15 @@ const SignUp = () => {
         formState: { errors },
     } = useForm<FormData>();
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-        console.log(data);
-    }
-
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
+    const [loading, setLoading] = useState(false);
+    const [errorDialog, setErrorDialog] = useState({
+        visible: false,
+        title: '',
+        description: '',
+    });
 
     // Password validation checks
     const regexChecks = [
@@ -70,6 +76,46 @@ const SignUp = () => {
         }
         else {
             clearErrors('confirmPassword');
+        }
+    }
+
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        const requestData = {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            password: data.password,
+        }
+        try {
+            setLoading(true);
+            const response = await signUpRequestOTP(requestData);
+            if(response.status) {
+                const type = "signUp";
+                router.push({
+                    pathname: `verify-otp/${type}`,
+                    params: requestData
+                });
+            }
+        }
+        catch (error: unknown) {
+            if(isCustomError(error)) {
+                setErrorDialog({
+                    visible: true,
+                    title: error.response.data.title,
+                    description: error.response.data.message,
+                });
+            }
+            else {
+                setErrorDialog({
+                    visible: true,
+                    title: 'Error',
+                    description: 'An unknown error occurred',
+                });
+            }
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -206,11 +252,11 @@ const SignUp = () => {
                                         value={value}
                                         error={errors.password ? true : false}
                                         secureTextEntry={!isPasswordVisible}
-                                        right={
-                                            <TextInput.Icon
-                                                icon={isPasswordVisible ? "eye" : "eye-off"}
-                                                onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
-                                        }
+                                        // right={
+                                        //     <TextInput.Icon
+                                        //         icon={isPasswordVisible ? "eye" : "eye-off"}
+                                        //         onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
+                                        // }
                                     />
                                 </>
                             )}
@@ -254,11 +300,11 @@ const SignUp = () => {
                                     }}
                                     value={value}
                                     error={errors.confirmPassword ? true : false}
-                                    right={
-                                        <TextInput.Icon
-                                            icon={isConfirmPasswordVisible ? "eye" : "eye-off"}
-                                            onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} />
-                                    }
+                                    // right={
+                                    //     <TextInput.Icon
+                                    //         icon={isConfirmPasswordVisible ? "eye" : "eye-off"}
+                                    //         onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)} />
+                                    // }
                                 />
                             )}
                             name="confirmPassword"
@@ -277,6 +323,8 @@ const SignUp = () => {
                     className="mt-5 py-1 w-3/4 mx-auto"
                     mode="contained"
                     onPress={handleSubmit(onSubmit)}
+                    loading={loading}
+                    disabled={loading}
                 >
                     <Text className="text-lg font-medium">Sign Up</Text>
                 </Button>
@@ -300,6 +348,14 @@ const SignUp = () => {
                     </View>
                 </View>
             </ScrollView>
+
+            <ErrorDialog  
+                visible={errorDialog.visible}
+                onDismiss={() => setErrorDialog({ visible: false, title: '', description: '' })}
+                title={errorDialog.title}
+                description={errorDialog.description}
+            />
+
         </>
     );
 }

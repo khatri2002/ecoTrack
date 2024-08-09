@@ -4,6 +4,7 @@ import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import EmailIcon from "./components/EmailIcon";
 
 type FormData = {
     email: string
@@ -61,9 +62,9 @@ const SignIn = () => {
                                         onChangeText={onChange}
                                         value={value}
                                         error={errors.email ? true : false}
-                                        right={
-                                            <TextInput.Icon icon="email" style={{ pointerEvents: "none" }} />
-                                        }
+                                        // right={
+                                        //     <TextInput.Icon icon="email" style={{ pointerEvents: "none" }} />
+                                        // }
                                     />
                                 )}
                                 name="email"
@@ -83,11 +84,11 @@ const SignIn = () => {
                                         onChangeText={onChange}
                                         value={value}
                                         error={errors.password ? true : false}
-                                        right={
-                                            <TextInput.Icon
-                                                icon={isPasswordVisible ? "eye" : "eye-off"}
-                                                onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
-                                        }
+                                        // right={
+                                        //     <TextInput.Icon
+                                        //         icon={isPasswordVisible ? "eye" : "eye-off"}
+                                        //         onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
+                                        // }
                                     />
                                 )}
                                 name="password"

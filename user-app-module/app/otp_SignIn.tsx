@@ -56,9 +56,9 @@ const Otp_SignIn = () => {
                             onChangeText={onChange}
                             value={value}
                             error={errors.email ? true : false}
-                            right={
-                                <TextInput.Icon icon="email" style={{ pointerEvents: "none" }} />
-                            }
+                            // right={
+                            //     <TextInput.Icon icon="email" style={{ pointerEvents: "none" }} />
+                            // }
                         />
                     )}
                     name="email"
