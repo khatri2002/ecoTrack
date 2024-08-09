@@ -137,16 +137,28 @@ async def sign_in_password(user: SignInPassword):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     if not user_doc:
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credentials",
+                "title": "Invalid credentials",
+                "message": "Please enter a valid email or password"
+            }
+        )
     
     # verify password
     if not verify_text(user.password, user_doc["password"]):
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credentials",
+                "title": "Invalid credentials",
+                "message": "Please enter a valid email or password"
+            }
+        )
     
     # create access token
     access_token = create_access_token({"email": user.email})
 
-    return JSONResponse(status_code=200, content={"access_token": access_token})
+    return JSONResponse(status_code=200, content={"status": True, "access_token": access_token})
 
 @router.post("/signIn/requestOTP")
 async def request_otp(user: SignInRequestOTP):
