@@ -242,7 +242,7 @@ async def verify_otp(user: SignInVerifyOTP):
     # create access token
     access_token = create_access_token({"email": user.email})
 
-    return JSONResponse(status_code=200, content={"access_token": access_token})
+    return JSONResponse(status_code=200, content={"status": True, "access_token": access_token})
 
 @router.get("/getUser")
 async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
