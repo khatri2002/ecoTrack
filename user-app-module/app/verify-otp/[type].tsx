@@ -7,8 +7,9 @@ import { Button } from "react-native-paper";
 import { set } from "react-hook-form";
 import { signUpVerifyOTP } from "../lib/api";
 import { SignUpVerifyOTP } from "../lib/api_types";
-import { isCustomError, saveToken } from "../lib/utils";
+import { isCustomError } from "../lib/utils";
 import ErrorDialog from "../components/ErrorDialog";
+import { useAuthContext } from "../context/AuthProvider";
 
 const VerifyOtp = () => {
   const { type, ...requestBody } = useLocalSearchParams();
@@ -21,6 +22,8 @@ const VerifyOtp = () => {
     title: "",
     description: "",
   });
+
+  const {userIn} = useAuthContext();
 
   const handleSubmit = async () => {
     if (otp.length < 4) {
@@ -41,7 +44,7 @@ const VerifyOtp = () => {
       };
       const response = await signUpVerifyOTP(requestBody_);
       if (response.status) {
-        await saveToken(response.access_token);
+        await userIn(response.access_token)
         router.navigate("home");
       }
     } catch (error: unknown) {

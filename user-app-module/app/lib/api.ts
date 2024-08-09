@@ -1,7 +1,7 @@
 import axios from "axios";
 import { SignUpRequestOTP, SignUpVerifyOTP } from "./api_types";
 
-const instance = axios.create({
+export const instance = axios.create({
   baseURL: "http://192.168.0.143:8000",
   timeout: 1000
 });
@@ -26,3 +26,12 @@ export const signUpVerifyOTP = async (data: SignUpVerifyOTP) => {
   }
 };
 
+export const getUser = async () => {
+  try {
+    const response = await instance.get("/user/getUser");
+    return response.data;
+  }
+  catch (error) {
+    throw error;
+  }
+}

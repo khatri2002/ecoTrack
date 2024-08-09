@@ -1,5 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
-
 type CustomError = {
   response: {
     data: {
@@ -14,7 +12,3 @@ type CustomError = {
 export const isCustomError = (error: unknown): error is CustomError => {
   return typeof error === "object" && error != null && "response" in error;
 };
-
-export const saveToken = async (token: string) => {
-  await SecureStore.setItemAsync("token", token);
-}
