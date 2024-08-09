@@ -16,14 +16,26 @@ async def request_otp(user: SignUpRequestOTP):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     if(existing_user):
-        raise HTTPException(status_code=400, detail="User already exists")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"user_exists",
+                "title": "User already exists",
+                "message": "User with this email or phone already exists"
+            }
+        )
     
     # check last OTP sent time
     otp_doc = await otp_collection.find_one({"email": user.email})
     if otp_doc:
         created_at = datetime.strptime(otp_doc["created_at"], "%Y-%m-%d %H:%M:%S")
         if (datetime.now() - created_at).seconds < 60:
-            raise HTTPException(status_code=400, detail="Please wait for 1 minute before requesting another OTP")
+            return JSONResponse(status_code=400, content={
+                    "status": False, 
+                    "type":"otp_wait",
+                    "title": "Too many requests",
+                    "message": "Please wait for 1 minute before requesting another OTP"
+                }
+            )
 
     # generate OTP
     otp = generate_otp()
@@ -57,16 +69,34 @@ async def verify_otp(user: SignUpVerifyOTP):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     if not otp_doc:
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credentials",
+                "title": "Invalid OTP",
+                "message": "Please enter a valid OTP"
+            }
+        )
     
     # check OTP expiry
     created_at = datetime.strptime(otp_doc["created_at"], "%Y-%m-%d %H:%M:%S")
     if (datetime.now() - created_at).seconds > 30:
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credentials",
+                "title": "OTP expired",
+                "message": "Please request a new OTP"
+            }
+        )
 
     # verify OTP
     if not verify_text(user.otp, otp_doc["otp"]):
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credentials",
+                "title": "Invalid OTP",
+                "message": "Please enter a valid OTP"
+            }
+        )
     
     # delete OTP
     try:
@@ -90,7 +120,7 @@ async def verify_otp(user: SignUpVerifyOTP):
     # create access token
     access_token = create_access_token({"email": user.email})
 
-    return JSONResponse(status_code=200, content={"access_token": access_token})
+    return JSONResponse(status_code=200, content={"status": True, "access_token": access_token})
 
 @router.post("/signIn/password")
 async def sign_in_password(user: SignInPassword):

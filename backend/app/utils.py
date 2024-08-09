@@ -8,7 +8,7 @@ load_dotenv()
 
 def generate_otp():
     secret = pyotp.random_base32()
-    totp = pyotp.TOTP(secret)
+    totp = pyotp.TOTP(secret, digits=4)
     return totp.now()
 
 def get_text_hash(text: str):
