@@ -10,7 +10,10 @@ export type SignUpVerifyOTP = SignUpRequestOTP & {
   otp: string;
 };
 
-export type SignInPassword = {
+export type SignInRequestOTP = {
   email: string;
+};
+
+export type SignInPassword = SignInRequestOTP & {
   password: string;
 }

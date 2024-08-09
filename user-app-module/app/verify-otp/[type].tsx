@@ -13,6 +13,8 @@ import { useAuthContext } from "../context/AuthProvider";
 
 const VerifyOtp = () => {
   const { type, ...requestBody } = useLocalSearchParams();
+  console.log("type", type);
+  console.log("requestBody", requestBody);
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
