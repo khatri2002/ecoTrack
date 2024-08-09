@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SignUpRequestOTP, SignUpVerifyOTP } from "./api_types";
+import { SignInPassword, SignUpRequestOTP, SignUpVerifyOTP } from "./api_types";
 
 export const instance = axios.create({
   baseURL: "http://192.168.0.143:8000",
@@ -29,6 +29,16 @@ export const signUpVerifyOTP = async (data: SignUpVerifyOTP) => {
 export const getUser = async () => {
   try {
     const response = await instance.get("/user/getUser");
+    return response.data;
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+export const signInPassword = async (data: SignInPassword) => {
+  try {
+    const response = await instance.post("/user/signIn/password", data);
     return response.data;
   }
   catch (error) {
