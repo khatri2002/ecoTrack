@@ -33,7 +33,7 @@ class SignUpRequestOTP(UserSignUp):
     pass
 
 class SignUpVerifyOTP(UserSignUp):
-    otp: Annotated[str, Query(min_length=6, max_length=6, regex="^[0-9]{6}$")]
+    otp: Annotated[str, Query(min_length=4, max_length=4, regex="^[0-9]{4}$")]
 
 
 # user signIn request
@@ -48,4 +48,4 @@ class SignInRequestOTP(UserSignIn):
     pass
 
 class SignInVerifyOTP(UserSignIn):
-    otp: Annotated[str, Query(min_length=6, max_length=6, regex="^[0-9]{6}$")]
+    otp: Annotated[str, Query(min_length=4, max_length=4, regex="^[0-9]{4}$")]
