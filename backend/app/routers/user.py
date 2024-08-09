@@ -169,14 +169,26 @@ async def request_otp(user: SignInRequestOTP):
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     if not user_doc:
-        raise HTTPException(status_code=400, detail="invalid credentials")
+        return JSONResponse(status_code=400, content={
+                "status": False, 
+                "type":"invalid_credential",
+                "title": "Invalid email",
+                "message": "This email is not registered"
+            }
+        )
     
     # check last OTP sent time
     otp_doc = await otp_collection.find_one({"email": user.email})
     if otp_doc:
         created_at = datetime.strptime(otp_doc["created_at"], "%Y-%m-%d %H:%M:%S")
         if (datetime.now() - created_at).seconds < 60:
-            raise HTTPException(status_code=400, detail="Please wait for 1 minute before requesting another OTP")
+            return JSONResponse(status_code=400, content={
+                    "status": False, 
+                    "type":"otp_wait",
+                    "title": "Too many requests",
+                    "message": "Please wait for 1 minute before requesting another OTP"
+                }
+            )
 
     # generate OTP
     otp = generate_otp()
