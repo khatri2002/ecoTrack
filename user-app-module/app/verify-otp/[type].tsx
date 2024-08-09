@@ -5,16 +5,20 @@ import OTPTextInput from "react-native-otp-textinput";
 import { useRef, useState } from "react";
 import { Button } from "react-native-paper";
 import { set } from "react-hook-form";
-import { signUpVerifyOTP } from "../lib/api";
-import { SignUpVerifyOTP } from "../lib/api_types";
+import { signInVerifyOTP, signUpVerifyOTP } from "../lib/api";
+import { SignInVerifyOTP, SignUpVerifyOTP } from "../lib/api_types";
 import { isCustomError } from "../lib/utils";
 import ErrorDialog from "../components/ErrorDialog";
 import { useAuthContext } from "../context/AuthProvider";
 
 const VerifyOtp = () => {
   const { type, ...requestBody } = useLocalSearchParams();
-  console.log("type", type);
-  console.log("requestBody", requestBody);
+
+  if (type !== "signIn" && type !== "signUp") {
+    throw new Error(
+      `Invalid route type: ${type}. Expected "signIn" or "signUp".`
+    );
+  }
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,7 +29,7 @@ const VerifyOtp = () => {
     description: "",
   });
 
-  const {userIn} = useAuthContext();
+  const { userIn } = useAuthContext();
 
   const handleSubmit = async () => {
     if (otp.length < 4) {
@@ -36,17 +40,28 @@ const VerifyOtp = () => {
 
     try {
       setLoading(true);
-      const requestBody_ = {
-        first_name: requestBody.first_name as string,
-        last_name: requestBody.last_name as string,
-        email: requestBody.email as string,
-        phone: requestBody.phone as string,
-        password: requestBody.password as string,
-        otp: otp as string,
-      };
-      const response = await signUpVerifyOTP(requestBody_);
+      let requestBody_, response;
+      if (type === "signUp") {
+        requestBody_ = {
+          first_name: requestBody.first_name,
+          last_name: requestBody.last_name,
+          email: requestBody.email,
+          phone: requestBody.phone,
+          password: requestBody.password,
+          otp: otp,
+        };
+        response = await signUpVerifyOTP(requestBody_ as SignUpVerifyOTP);
+      } else {
+        requestBody_ = {
+          email: requestBody.email,
+          otp: otp,
+        };
+        console.log(requestBody_);
+        response = await signInVerifyOTP(requestBody_ as SignInVerifyOTP);
+      }
+
       if (response.status) {
-        await userIn(response.access_token)
+        await userIn(response.access_token);
         router.navigate("home");
       }
     } catch (error: unknown) {

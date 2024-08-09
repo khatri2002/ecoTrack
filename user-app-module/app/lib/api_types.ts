@@ -17,3 +17,7 @@ export type SignInRequestOTP = {
 export type SignInPassword = SignInRequestOTP & {
   password: string;
 }
+
+export type SignInVerifyOTP = SignInRequestOTP & {
+  otp: string;
+}
