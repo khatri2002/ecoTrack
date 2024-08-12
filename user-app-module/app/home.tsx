@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { useAuthContext } from "./context/AuthProvider";
 import { Button } from "react-native-paper";
@@ -18,6 +18,9 @@ const Home = () => {
         router.replace("signIn");
       }}>
         sign out
+      </Button>
+      <Button mode="contained" className="mt-6" onPress={() => router.navigate("report-cleanup-info")}>
+        Report Cleanup
       </Button>
     </>
   );
