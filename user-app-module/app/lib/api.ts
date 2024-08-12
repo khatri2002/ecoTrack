@@ -2,7 +2,7 @@ import axios from "axios";
 import { SignInPassword, SignInRequestOTP, SignInVerifyOTP, SignUpRequestOTP, SignUpVerifyOTP } from "./api_types";
 
 export const instance = axios.create({
-  baseURL: "http://192.168.0.143:8000",
+  baseURL: "http://192.168.0.144:8000",
   timeout: 1000
 });
 

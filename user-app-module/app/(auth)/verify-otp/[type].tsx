@@ -1,15 +1,15 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Image, Text, TouchableHighlight, View } from "react-native";
-import Logo from "../../assets/ecoTrack_logo.png";
+import Logo from "../../../assets/ecoTrack_logo.png";
 import OTPTextInput from "react-native-otp-textinput";
 import { useRef, useState } from "react";
 import { Button } from "react-native-paper";
 import { set } from "react-hook-form";
-import { signInVerifyOTP, signUpVerifyOTP } from "../lib/api";
-import { SignInVerifyOTP, SignUpVerifyOTP } from "../lib/api_types";
-import { isCustomError } from "../lib/utils";
-import ErrorDialog from "../components/ErrorDialog";
-import { useAuthContext } from "../context/AuthProvider";
+import { signInVerifyOTP, signUpVerifyOTP } from "../../lib/api";
+import { SignInVerifyOTP, SignUpVerifyOTP } from "../../lib/api_types";
+import { isCustomError } from "../../lib/utils";
+import ErrorDialog from "../../components/ErrorDialog";
+import { useAuthContext } from "../../context/AuthProvider";
 
 const VerifyOtp = () => {
   const { type, ...requestBody } = useLocalSearchParams();

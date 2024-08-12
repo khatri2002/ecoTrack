@@ -24,10 +24,10 @@ const RootLayout = () => {
             <SafeAreaView className="flex-1">
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="index" />
-                <Stack.Screen name="signIn" />
-                <Stack.Screen name="signUp" />
-                <Stack.Screen name="otp_SignIn" />
-                <Stack.Screen name="verify-otp/[type]" />
+                <Stack.Screen name="(auth)/signIn" />
+                <Stack.Screen name="(auth)/signUp" />
+                <Stack.Screen name="(auth)/otp_SignIn" />
+                <Stack.Screen name="(auth)/verify-otp/[type]" />
                 <Stack.Screen name="home" />
               </Stack>
             </SafeAreaView>

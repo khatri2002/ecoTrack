@@ -1,13 +1,13 @@
 import { Image, Text, TouchableHighlight, View } from "react-native";
-import Logo from "../assets/ecoTrack_logo.png";
+import Logo from "../../assets/ecoTrack_logo.png";
 import { Button, TextInput } from "react-native-paper";
 import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { signInPassword } from "./lib/api";
-import { isCustomError } from "./lib/utils";
-import ErrorDialog from "./components/ErrorDialog";
-import { useAuthContext } from "./context/AuthProvider";
+import { signInPassword } from "../lib/api";
+import { isCustomError } from "../lib/utils";
+import ErrorDialog from "../components/ErrorDialog";
+import { useAuthContext } from "../context/AuthProvider";
 
 type FormData = {
   email: string;

@@ -1,12 +1,12 @@
 import { Image, ScrollView, Text, Touchable, TouchableHighlight, View } from "react-native";
-import Logo from "../assets/ecoTrack_logo.png";
+import Logo from "../../assets/ecoTrack_logo.png";
 import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
 import { useForm, Controller, SubmitHandler, set } from "react-hook-form";
 import { useState } from "react";
-import { signUpRequestOTP } from "./lib/api";
-import { isCustomError } from "./lib/utils";
-import ErrorDialog from "./components/ErrorDialog";
+import { signUpRequestOTP } from "../lib/api";
+import { isCustomError } from "../lib/utils";
+import ErrorDialog from "../components/ErrorDialog";
 
 type FormData = {
     firstName: string
