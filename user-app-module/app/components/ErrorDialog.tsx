@@ -15,7 +15,7 @@ const ErrorDialog = ({
 }: ErrorDialogProps) => {
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={onDismiss}>
+      <Dialog visible={visible} onDismiss={onDismiss} >
         <Dialog.Icon icon="alert" color="#bb2124" size={26} />
         <Dialog.Title className="text-center">{title}</Dialog.Title>
         <Dialog.Content className="p-0">

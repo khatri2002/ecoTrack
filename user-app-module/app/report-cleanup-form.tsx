@@ -12,6 +12,22 @@ import { useState } from "react";
 
 const ReportCleanupForm = () => {
   const [isPhotosModalVisible, setPhotosModalVisible] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
+
+  const handleSetPhotos = (newPhotos: string[]) => {
+    setPhotos(newPhotos);
+  };
+
+  const renderCapturedPhotosMsg = () => {
+    switch (photos.length) {
+      case 0:
+        return "No photos captured";
+      case 1:
+        return "1 photo captured";
+      default:
+        return `${photos.length} photos captured`;
+    }
+  }
 
   return (
     <>
@@ -22,11 +38,11 @@ const ReportCleanupForm = () => {
         </Appbar.Header>
 
         <ScrollView className="px-3">
-          <View className="flex-1 mt-12">
-            <View className="p-3 flex-col gap-y-6 bg-slate-200 rounded-lg">
-              <View className="bg-white px-3 pb-5 pt-5 rounded-lg relative flex-col gap-y-2">
-                <View className="absolute left-5 -top-4 bg-primary-800 rounded-lg">
-                  <Text className="font-semibold text-sm text-white px-3">
+          <View className="mt-12 flex-1">
+            <View className="flex-col gap-y-6 rounded-lg bg-slate-200 p-3">
+              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+                <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
+                  <Text className="px-3 text-sm font-semibold text-white">
                     Contact Details
                   </Text>
                 </View>
@@ -35,9 +51,9 @@ const ReportCleanupForm = () => {
                 <TextInput mode="flat" label="Phone" />
               </View>
 
-              <View className="bg-white px-3 pb-5 pt-5 rounded-lg relative flex-col gap-y-2">
-                <View className="absolute left-5 -top-4 bg-primary-800 rounded-lg">
-                  <Text className="font-semibold text-sm text-white px-3">
+              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+                <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
+                  <Text className="px-3 text-sm font-semibold text-white">
                     Spot Details
                   </Text>
                 </View>
@@ -45,9 +61,9 @@ const ReportCleanupForm = () => {
                 <TextInput mode="flat" label="Description" multiline={true} />
               </View>
 
-              <View className="bg-white px-3 pb-5 pt-5 rounded-lg relative flex-col gap-y-2">
-                <View className="absolute left-5 -top-4 bg-primary-800 rounded-lg">
-                  <Text className="font-semibold text-sm text-white px-3">
+              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+                <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
+                  <Text className="px-3 text-sm font-semibold text-white">
                     Location Details
                   </Text>
                 </View>
@@ -55,9 +71,9 @@ const ReportCleanupForm = () => {
                 <TextInput mode="flat" label="Address" />
               </View>
 
-              <View className="bg-white px-3 pb-5 pt-5 rounded-lg relative flex-col gap-y-2">
-                <View className="absolute left-5 -top-4 bg-primary-800 rounded-lg">
-                  <Text className="font-semibold text-sm text-white px-3">
+              <View className="relative rounded-lg bg-white px-3 pb-5 pt-5">
+                <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
+                  <Text className="px-3 text-sm font-semibold text-white">
                     Media Details
                   </Text>
                 </View>
@@ -67,7 +83,10 @@ const ReportCleanupForm = () => {
                 >
                   Capture Photos
                 </Button>
-                <Button mode="contained">Capture Video</Button>
+                <Text className="text-center text-slate-500 mt-1">
+                  {renderCapturedPhotosMsg()}
+                </Text>
+                <Button className="mt-4" mode="contained">Capture Video</Button>
               </View>
             </View>
           </View>
@@ -77,6 +96,8 @@ const ReportCleanupForm = () => {
       <PhotosModal
         visible={isPhotosModalVisible}
         handleClose={() => setPhotosModalVisible(false)}
+        photos={photos}
+        handleSetPhotos={handleSetPhotos}
       />
     </>
   );

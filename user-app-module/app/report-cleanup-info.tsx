@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import PermissionsReqDialog from "./components/PermissionsReqDialog";
 import { set } from "react-hook-form";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 
 const ReportCleanUpInfo = () => {
   const [checked, setChecked] = useState(false);
@@ -35,8 +36,8 @@ const ReportCleanUpInfo = () => {
     showConsentError(false);
 
     // check if location permissions are granted
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
+    let { status: locationStatus } = await Location.requestForegroundPermissionsAsync();
+    if (locationStatus !== 'granted') {
       setPermissionsReqDialog({
         visible: true,
         title: "Locations aren't allowed",
@@ -46,7 +47,17 @@ const ReportCleanUpInfo = () => {
       return;
     }
 
-    // TODO: check for any other permissions required
+    // check if camera permissions are granted
+    let {status: cameraStatus} = await ImagePicker.requestCameraPermissionsAsync();
+    if(cameraStatus !== "granted") {
+      setPermissionsReqDialog({
+        visible: true,
+        title: "Camera access isn't allowed",
+        description: "To enable camera access, go to Settings and turn on camera access for this app"
+      });
+      setLoading(false);
+      return;
+    }
 
     setLoading(false);
 
