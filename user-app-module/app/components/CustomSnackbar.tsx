@@ -10,6 +10,7 @@ type CustomSnackbarProps = {
     onPress: () => void;
   };
   varient?: "error";
+  position?: "top";
   text: string;
 };
 
@@ -18,10 +19,12 @@ const CustomSnackbar = ({
   onDismiss,
   action,
   varient,
+  position,
   text,
 }: CustomSnackbarProps) => {
   return (
     <Snackbar
+      wrapperStyle={position==="top" ? {top: 0} : {}}
       visible={visible}
       onDismiss={onDismiss}
       action={action}
