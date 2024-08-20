@@ -1,19 +1,136 @@
-import { Appbar, Button, TextInput } from "react-native-paper";
+import { Appbar, Button, TextInput, HelperText } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
-import { ScrollView, Text, TouchableHighlight, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import PhotosModal from "./components/PhotosModal";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import CustomSnackbar from "./components/CustomSnackbar";
+import { getLocation } from "./lib/utils";
+import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
+import { useAuthContext } from "./context/AuthProvider";
+import { router } from "expo-router";
+import LoadingDialog from "./components/LoadingDialog";
+
+type Coordinates = {
+  latitude: number;
+  longitude: number;
+};
+
+type FormData = {
+  name: string;
+  email: string;
+  phone: string;
+  title: string;
+  description: string;
+  city: string;
+  state: string;
+  address: string;
+  additionalAddress: string;
+  postalCode: string;
+};
+
+type MediaError = {
+  photos: boolean;
+  video: boolean;
+};
 
 const ReportCleanupForm = () => {
+  const { user } = useAuthContext();
+
+  const [loading, setLoading] = useState({
+    show: false,
+    text: "",
+  });
+  const [errorSnackbar, setErrorSnackbar] = useState(false);
+  // const [photosError, setPhotosError] = useState({
+  //   show: false,
+  //   text: "",
+  // });
+  // const [videoError, setVideoError] = useState({
+  //   show: false,
+  //   text: "",
+  // });
+  const [mediaError, setMediaError] = useState<MediaError>({
+    photos: false,
+    video: false,
+  });
+
+  const [showAdditionalAddress, setShowAdditionalAddress] = useState(false);
+
   const [isPhotosModalVisible, setPhotosModalVisible] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
 
   const [video, setVideo] = useState<string | null>(null);
   const [removedVideo, setRemovedVideo] = useState<string | null>(null);
   const [removedVideoMsg, setRemovedMsg] = useState<boolean>(false);
+
+  const [accurateCoordinates, setAccurateCoordinates] =
+    useState<Coordinates | null>(null);
+  const [apiCoordinates, setApiCoordinates] = useState<Coordinates | null>(
+    null,
+  );
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  useEffect(() => {
+    let ignore = false;
+    // setLoading({
+    //   show: true,
+    //   text: "Getting your current location...",
+    // });
+
+    if (!user) {
+      router.replace("signIn");
+      return;
+    }
+
+    // set contact details
+    setValue("name", user.name);
+    setValue("email", user.email);
+    setValue("phone", user.phone);
+
+    // get and set location
+    getLocation()
+      .then((location) => {
+        if (!ignore) {
+          setAccurateCoordinates(location.coordinates);
+          // accurate coordinates are fetched using the device's GPS
+
+          setApiCoordinates({
+            latitude: location.features[0].geometry.coordinates[1],
+            longitude: location.features[0].geometry.coordinates[0],
+          });
+          // api coordinates are fetched using the OpenStreetMap API
+
+          setValue("city", location.features[0].properties.geocoding.city);
+          setValue("state", location.features[0].properties.geocoding.state);
+          setValue("address", location.features[0].properties.geocoding.label);
+          setValue(
+            "postalCode",
+            location.features[0].properties.geocoding.postcode,
+          );
+        }
+      })
+      .catch((error) => {
+        // TODO: show error
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading({
+          show: false,
+          text: "",
+        });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const ref = useRef(null);
   const player = useVideoPlayer(video, (player) => {
@@ -43,6 +160,9 @@ const ReportCleanupForm = () => {
   };
 
   const handleCaptureVideo = async () => {
+    if (mediaError.video) {
+      setMediaError({ ...mediaError, video: false });
+    }
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
     });
@@ -65,6 +185,49 @@ const ReportCleanupForm = () => {
     }
   };
 
+  const handleErrors = (errors: any) => {
+    let mediaError = {
+      photos: false,
+      video: false,
+    };
+    if (errors.photos) {
+      mediaError.photos = true;
+    }
+    if (errors.video) {
+      mediaError.video = true;
+    }
+    setMediaError(mediaError);
+    setErrorSnackbar(true);
+  };
+
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    let mediaError = {
+      photos: false,
+      video: false,
+    };
+    if(photos.length === 0) {
+      mediaError.photos = true;
+    }
+    if(!video) {
+      mediaError.video = true;
+    }
+    if(mediaError.photos || mediaError.video) {
+      setMediaError(mediaError);
+      setErrorSnackbar(true);
+      return;
+    }
+
+    // combine hook forms data, accurate coordinates and api coordinates, photos and video
+    const reportData = {
+      ...data,
+      ...accurateCoordinates,
+      ...apiCoordinates,
+      photos,
+      video,
+    };
+    
+  };
+
   return (
     <>
       <View className="flex-1 bg-white">
@@ -82,9 +245,57 @@ const ReportCleanupForm = () => {
                     Contact Details
                   </Text>
                 </View>
-                <TextInput mode="flat" label="Name" />
-                <TextInput mode="flat" label="Email" />
-                <TextInput mode="flat" label="Phone" />
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Name"
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="name"
+                  />
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Email"
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="email"
+                  />
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Phone"
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="phone"
+                  />
+                </View>
               </View>
 
               <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
@@ -93,8 +304,75 @@ const ReportCleanupForm = () => {
                     Spot Details
                   </Text>
                 </View>
-                <TextInput mode="flat" label="Title" />
-                <TextInput mode="flat" label="Description" multiline={true} />
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Title is required",
+                      },
+                      minLength: {
+                        value: 5,
+                        message: "Minimum 5 characters required",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Maximum 100 characters allowed",
+                      },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Title"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        error={errors.title ? true : false}
+                      />
+                    )}
+                    name="title"
+                  />
+                  {errors.title && (
+                    <HelperText type="error">{errors.title.message}</HelperText>
+                  )}
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Description is required",
+                      },
+                      minLength: {
+                        value: 10,
+                        message: "Minimum 10 characters required",
+                      },
+                      maxLength: {
+                        value: 500,
+                        message: "Maximum 500 characters allowed",
+                      },
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Description"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        multiline={true}
+                        error={errors.description ? true : false}
+                      />
+                    )}
+                    name="description"
+                  />
+                  {errors.description && (
+                    <HelperText type="error">
+                      {errors.description.message}
+                    </HelperText>
+                  )}
+                </View>
               </View>
 
               <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
@@ -103,11 +381,121 @@ const ReportCleanupForm = () => {
                     Location Details
                   </Text>
                 </View>
-                <TextInput mode="flat" label="City" />
-                <TextInput mode="flat" label="Address" />
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="City"
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="city"
+                  />
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="State"
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="state"
+                  />
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Address"
+                        multiline={true}
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="address"
+                  />
+                </View>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        mode="flat"
+                        label="Postal Code"
+                        multiline={true}
+                        value={value}
+                        disabled={true}
+                      />
+                    )}
+                    name="postalCode"
+                  />
+                </View>
+                {showAdditionalAddress ? (
+                  <View>
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                          mode="flat"
+                          label="Additional Address Details"
+                          onBlur={onBlur}
+                          onChangeText={onChange}
+                          multiline={true}
+                          value={value}
+                        />
+                      )}
+                      name="additionalAddress"
+                    />
+                    <View className="flex-row items-center">
+                      <Button
+                        onPress={() => {
+                          setValue("additionalAddress", "");
+                          setShowAdditionalAddress(false);
+                        }}
+                      >
+                        <Text className="text-red-600">Remove</Text>
+                      </Button>
+                      <Text className="font-medium">
+                        additional address details
+                      </Text>
+                    </View>
+                  </View>
+                ) : (
+                  <View className="flex-row items-center">
+                    <Button onPress={() => setShowAdditionalAddress(true)}>
+                      Click
+                    </Button>
+                    <Text className="font-medium">
+                      to add additional address details
+                    </Text>
+                  </View>
+                )}
               </View>
 
-              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+              <View
+                className={`relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5 ${mediaError.photos ? "border-2 border-red-600" : ""}`}
+              >
                 <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
                   <Text className="px-3 text-sm font-semibold text-white">
                     Photos
@@ -115,16 +503,27 @@ const ReportCleanupForm = () => {
                 </View>
                 <Button
                   mode="contained"
-                  onPress={() => setPhotosModalVisible(true)}
+                  onPress={() => {
+                    setMediaError({ ...mediaError, photos: false });
+                    setPhotosModalVisible(true);
+                  }}
                 >
                   Capture Photos
                 </Button>
-                <Text className="text-center text-slate-500">
-                  {renderCapturedPhotosMsg()}
-                </Text>
+                {!mediaError.photos? (
+                  <Text className="text-center text-slate-500">
+                    {renderCapturedPhotosMsg()}
+                  </Text>
+                ) : (
+                  <Text className="text-center text-red-600">
+                    At least 1 photo is required
+                  </Text>
+                )}
               </View>
 
-              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+              <View
+                className={`relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5 ${mediaError.video ? "border-2 border-red-600" : ""}`}
+              >
                 <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
                   <Text className="px-3 text-sm font-semibold text-white">
                     Video
@@ -143,9 +542,15 @@ const ReportCleanupForm = () => {
                     allowsPictureInPicture
                   />
                 )}
-                <Text className="mt-2 text-center text-slate-500">
-                  {renderVideCapturedMsg()}
-                </Text>
+                {!mediaError.video ? (
+                  <Text className="mt-2 text-center text-slate-500">
+                    {renderVideCapturedMsg()}
+                  </Text>
+                ) : (
+                  <Text className="mt-2 text-center text-red-600">
+                    Video is required
+                  </Text>
+                )}
                 {video && (
                   <View className="flex-row justify-center">
                     <Button onPress={handleCaptureVideo}>Retake</Button>
@@ -154,6 +559,19 @@ const ReportCleanupForm = () => {
                     </Button>
                   </View>
                 )}
+              </View>
+
+              <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
+                <Button
+                  onPress={handleSubmit(onSubmit, (errors) => {
+                    handleErrors(errors);
+                  })}
+                  icon="send"
+                  mode="contained"
+                  contentStyle={{ flexDirection: "row-reverse" }}
+                >
+                  <Text className="text-lg font-semibold">Submit</Text>
+                </Button>
               </View>
             </View>
           </View>
@@ -177,6 +595,16 @@ const ReportCleanupForm = () => {
         position="top"
         text="Video Removed"
       />
+
+      <CustomSnackbar
+        visible={errorSnackbar}
+        onDismiss={() => setErrorSnackbar(false)}
+        varient="error"
+        position="top"
+        text="Please Provide Valid Information"
+      />
+
+      <LoadingDialog visible={loading.show} text={loading.text} />
     </>
   );
 };

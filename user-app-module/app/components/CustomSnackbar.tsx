@@ -5,7 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 type CustomSnackbarProps = {
   visible: boolean;
   onDismiss: () => void;
-  action: {
+  action?: {
     label: string;
     onPress: () => void;
   };

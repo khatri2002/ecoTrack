@@ -29,12 +29,9 @@ const PermissionsReqDialog = ({ visible, onDismiss, title, description }: Permis
               <Entypo name="location" size={24} color="white" />
             </View>
             <Text className="text-center mt-4 font-semibold text-base">
-              {/* Locations aren't allowed */}
               {title}
             </Text>
             <Text className="mt-3">
-              {/* To enable location services, go to Settings and turn on location
-              services for this app. */}
               {description}
             </Text>
           </Dialog.Content>
