@@ -11,6 +11,10 @@ import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
 import { useAuthContext } from "./context/AuthProvider";
 import { router } from "expo-router";
 import LoadingDialog from "./components/LoadingDialog";
+import axios from "axios";
+import { submitReport } from "./lib/api";
+import * as FileSystem from 'expo-file-system';
+// import { uploadFile } from "./lib/api";
 
 type Coordinates = {
   latitude: number;
@@ -167,6 +171,15 @@ const ReportCleanupForm = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
     });
     if (!result.canceled) {
+      // if mov, rename to mp4
+      if(result.assets[0].uri.split('.').pop() === 'mov') {
+        let newUri = result.assets[0].uri.replace(/mov$/, 'mp4');
+        await FileSystem.moveAsync({
+          from: result.assets[0].uri,
+          to: newUri,
+        });
+        result.assets[0].uri = newUri;
+      }
       setVideo(result.assets[0].uri);
     }
   };
@@ -190,10 +203,10 @@ const ReportCleanupForm = () => {
       photos: false,
       video: false,
     };
-    if (errors.photos) {
+    if (photos.length === 0) {
       mediaError.photos = true;
     }
-    if (errors.video) {
+    if (!video) {
       mediaError.video = true;
     }
     setMediaError(mediaError);
@@ -205,27 +218,56 @@ const ReportCleanupForm = () => {
       photos: false,
       video: false,
     };
-    if(photos.length === 0) {
+    if (photos.length === 0) {
       mediaError.photos = true;
     }
-    if(!video) {
+    if (!video) {
       mediaError.video = true;
     }
-    if(mediaError.photos || mediaError.video) {
+    if (mediaError.photos || mediaError.video) {
       setMediaError(mediaError);
       setErrorSnackbar(true);
       return;
     }
 
-    // combine hook forms data, accurate coordinates and api coordinates, photos and video
-    const reportData = {
-      ...data,
-      ...accurateCoordinates,
-      ...apiCoordinates,
-      photos,
-      video,
+    // prepare data
+    const _data = {
+      title: data.title,
+      description: data.description,
+      location: {
+        city: data.city,
+        state: data.state,
+        address: data.address,
+        postal_code: data.postalCode,
+        additional_address: data.additionalAddress,
+        accurate_coordinates: accurateCoordinates,
+        api_coordinates: apiCoordinates,
+      },
     };
-    
+
+    // prepare formData
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(_data));
+    photos.forEach((photo) => {
+      formData.append("photos", {
+        uri: photo,
+        name: photo.split("/").pop(),
+        type: "image/jpeg",
+      });
+    });
+    formData.append("video", {
+      uri: video,
+      name: video!.split("/").pop(),
+      type: "video/mp4",
+    });
+
+    try {
+      const response = await submitReport(formData);
+      console.log(response);
+    }
+    catch(error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -510,7 +552,7 @@ const ReportCleanupForm = () => {
                 >
                   Capture Photos
                 </Button>
-                {!mediaError.photos? (
+                {!mediaError.photos ? (
                   <Text className="text-center text-slate-500">
                     {renderCapturedPhotosMsg()}
                   </Text>

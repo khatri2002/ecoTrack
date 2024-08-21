@@ -3,7 +3,7 @@ import { SignInPassword, SignInRequestOTP, SignInVerifyOTP, SignUpRequestOTP, Si
 
 export const instance = axios.create({
   baseURL: "http://192.168.0.143:8000",
-  timeout: 1000
+  timeout: 9000000
 });
 
 export const signUpRequestOTP = async (data: SignUpRequestOTP) => {
@@ -59,6 +59,28 @@ export const signInRequestOtp = async (data: SignInRequestOTP) => {
 export const signInVerifyOTP = async (data: SignInVerifyOTP) => {
   try {
     const response = await instance.post("/user/signIn/verifyOTP", data);
+    return response.data;
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+// export const uploadFile = async (file: any) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     const response = await instance.post("/user/report/uploadFile", formData);
+//     return response.data;
+//   }
+//   catch (error) {
+//     throw error;
+//   }
+// }
+
+export const submitReport = async (data: any) => {
+  try {
+    const response = await instance.post("/user/report/submit", data);
     return response.data;
   }
   catch (error) {
