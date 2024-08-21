@@ -279,9 +279,7 @@ async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
 # @router.get("/test/getPresignedUrl")
 # async def get_presigned_url():
 #     session = boto3.Session(
-#         aws_access_key_id="aws_access_key_id",
-#         aws_secret_access_key="aws_secret_access_key",
-#         region_name="eu-north-1",
+#         
 #     )
 #     s3 = session.client('s3', config=boto3.session.Config(
 #         signature_version='s3v4'), endpoint_url="https://s3.eu-north-1.amazonaws.com")
