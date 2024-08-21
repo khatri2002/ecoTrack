@@ -485,7 +485,6 @@ const ReportCleanupForm = () => {
                       <TextInput
                         mode="flat"
                         label="Postal Code"
-                        multiline={true}
                         value={value}
                         disabled={true}
                       />

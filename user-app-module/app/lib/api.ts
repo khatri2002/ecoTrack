@@ -66,18 +66,6 @@ export const signInVerifyOTP = async (data: SignInVerifyOTP) => {
   }
 }
 
-// export const uploadFile = async (file: any) => {
-//   try {
-//     const formData = new FormData();
-//     formData.append("file", file);
-//     const response = await instance.post("/user/report/uploadFile", formData);
-//     return response.data;
-//   }
-//   catch (error) {
-//     throw error;
-//   }
-// }
-
 export const submitReport = async (data: any) => {
   try {
     const response = await instance.post("/user/report/submit", data);
