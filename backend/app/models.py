@@ -1,4 +1,4 @@
-from fastapi import Query
+from fastapi import Query, Form, UploadFile
 from pydantic import BaseModel, field_validator, EmailStr
 from typing import Annotated
 import re
@@ -54,9 +54,31 @@ class SignInVerifyOTP(UserSignIn):
 # user dependency
 
 class User(BaseModel):
+    id: int
     name: str
     email: EmailStr
     phone: str
 
 class TokenData(BaseModel):
     email: str | None = None
+
+
+# report request data
+
+class Coordinates(BaseModel):
+    latitude: float
+    longitude: float
+
+class Location(BaseModel):
+    city: str
+    state: str
+    address: str
+    postal_code: str
+    additional_address: str | None = None
+    accurate_coordinates: Coordinates
+    api_coordinates: Coordinates
+
+class ReportRequestData(BaseModel):
+    title: Annotated[str, Query(min_length=5, max_length=100)]
+    description: Annotated[str, Query(min_length=10, max_length=500)]
+    location: Location
