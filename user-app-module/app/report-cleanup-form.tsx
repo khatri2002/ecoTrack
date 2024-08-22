@@ -7,14 +7,13 @@ import { useEffect, useRef, useState } from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import CustomSnackbar from "./components/CustomSnackbar";
 import { getLocation } from "./lib/utils";
-import { Controller, set, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAuthContext } from "./context/AuthProvider";
 import { router } from "expo-router";
 import LoadingDialog from "./components/LoadingDialog";
-import axios from "axios";
 import { submitReport } from "./lib/api";
-import * as FileSystem from 'expo-file-system';
-// import { uploadFile } from "./lib/api";
+import * as FileSystem from "expo-file-system";
+import ErrorDialog from "./components/ErrorDialog";
 
 type Coordinates = {
   latitude: number;
@@ -47,18 +46,11 @@ const ReportCleanupForm = () => {
     text: "",
   });
   const [errorSnackbar, setErrorSnackbar] = useState(false);
-  // const [photosError, setPhotosError] = useState({
-  //   show: false,
-  //   text: "",
-  // });
-  // const [videoError, setVideoError] = useState({
-  //   show: false,
-  //   text: "",
-  // });
   const [mediaError, setMediaError] = useState<MediaError>({
     photos: false,
     video: false,
   });
+  const [showError, setShowError] = useState(false);
 
   const [showAdditionalAddress, setShowAdditionalAddress] = useState(false);
 
@@ -84,10 +76,10 @@ const ReportCleanupForm = () => {
 
   useEffect(() => {
     let ignore = false;
-    // setLoading({
-    //   show: true,
-    //   text: "Getting your current location...",
-    // });
+    setLoading({
+      show: true,
+      text: "Getting your current location...",
+    });
 
     if (!user) {
       router.replace("signIn");
@@ -172,8 +164,8 @@ const ReportCleanupForm = () => {
     });
     if (!result.canceled) {
       // if mov, rename to mp4
-      if(result.assets[0].uri.split('.').pop() === 'mov') {
-        let newUri = result.assets[0].uri.replace(/mov$/, 'mp4');
+      if (result.assets[0].uri.split(".").pop() === "mov") {
+        let newUri = result.assets[0].uri.replace(/mov$/, "mp4");
         await FileSystem.moveAsync({
           from: result.assets[0].uri,
           to: newUri,
@@ -230,6 +222,11 @@ const ReportCleanupForm = () => {
       return;
     }
 
+    setLoading({
+      show: true,
+      text: "Submitting report...",
+    });
+
     // prepare data
     const _data = {
       title: data.title,
@@ -263,10 +260,16 @@ const ReportCleanupForm = () => {
 
     try {
       const response = await submitReport(formData);
-      console.log(response);
-    }
-    catch(error) {
-      console.log(error);
+      if (response.status) {
+        router.replace("report-cleanup-success");
+      }
+    } catch (error) {
+      setShowError(true);
+    } finally {
+      setLoading({
+        show: false,
+        text: "",
+      });
     }
   };
 
@@ -643,6 +646,13 @@ const ReportCleanupForm = () => {
         varient="error"
         position="top"
         text="Please Provide Valid Information"
+      />
+
+      <ErrorDialog
+        visible={showError}
+        description="Something went wrong. Please try again later."
+        title="Error Submitting Report"
+        onDismiss={() => setShowError(false)}
       />
 
       <LoadingDialog visible={loading.show} text={loading.text} />

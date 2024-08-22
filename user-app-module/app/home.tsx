@@ -22,6 +22,15 @@ const Home = () => {
       <Button mode="contained" className="mt-6" onPress={() => router.navigate("report-cleanup-info")}>
         Report Cleanup
       </Button>
+      <Button mode="contained" className="mt-6" onPress={() => router.navigate("report-cleanup-success")}>
+        Report Cleanup Success Screen
+      </Button>
+      <Button mode="contained" className="mt-6" onPress={() => router.navigate("profile")}>
+        Profile
+      </Button>
+      <Button mode="contained" className="mt-6" onPress={() => router.navigate("reports")}>
+        Reports
+      </Button>
     </>
   );
 };
