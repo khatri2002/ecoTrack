@@ -3,6 +3,9 @@ import bcrypt
 import jwt
 from dotenv import load_dotenv
 import os
+from datetime import datetime
+from .db import statuses_collection
+from fastapi import HTTPException
 
 load_dotenv()
 
@@ -32,3 +35,21 @@ def create_access_token(data: dict):
 def decode_access_token(token: str):
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     return payload
+
+def format_date(date: str):
+    date_time_obj = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+    formatted_date = date_time_obj.strftime("%b %d, %Y")
+    return formatted_date
+
+async def get_status(status: int):
+    try:
+        status_doc = await statuses_collection.find_one({"index": status})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    if not status_doc:
+        raise HTTPException(status_code=404, detail="Status not found")
+    return {
+        "index": status_doc["index"],
+        "status": status_doc["status"],
+        "description": status_doc["description"]
+    }

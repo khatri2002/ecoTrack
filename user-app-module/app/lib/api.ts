@@ -75,3 +75,23 @@ export const submitReport = async (data: any) => {
     throw error;
   }
 }
+
+export const getReports = async () => {
+  try {
+    const response = await instance.get("/user/report/getAll");
+    return response.data;
+  }
+  catch(error) {
+    throw error;
+  }
+}
+
+export const getAllStatuses = async () => {
+  try {
+    const response = await instance.get("/user/status/getAll");
+    return response.data;
+  }
+  catch(error) {
+    throw error;
+  }
+}

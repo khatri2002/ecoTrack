@@ -1,9 +1,9 @@
 {
     "extends": "@tsconfig/react-native/tsconfig.json",
-    "compilerOptions": {
-        "lib": [
-            "DOM.Iterable",
-            "ESNext"
-        ]
-    }
+    // "compilerOptions": {
+    //     "lib": [
+    //         "DOM.Iterable",
+    //         "ESNext"
+    //     ]
+    // }
 }

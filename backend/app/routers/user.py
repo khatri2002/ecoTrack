@@ -1,6 +1,6 @@
 from app.dependencies import get_current_user
-from app.db import user_collection, otp_collection, index_collection, reports_collection
-from app.utils import generate_otp, get_text_hash, verify_text, create_access_token
+from app.db import user_collection, otp_collection, index_collection, reports_collection, statuses_collection
+from app.utils import generate_otp, get_text_hash, verify_text, create_access_token, format_date, get_status
 from app.models import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP, User, ReportRequestData
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, Form
 from typing import Annotated
@@ -279,7 +279,7 @@ async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
 # @router.get("/test/getPresignedUrl")
 # async def get_presigned_url():
 #     session = boto3.Session(
-#         
+#
 #     )
 #     s3 = session.client('s3', config=boto3.session.Config(
 #         signature_version='s3v4'), endpoint_url="https://s3.eu-north-1.amazonaws.com")
@@ -354,7 +354,9 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
         "description": request_data.description,
         "location": request_data.location.model_dump(),
         "photos": photos_name,
-        "video": video
+        "video": video,
+        "status": 1,
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     try:
         await reports_collection.insert_one(report_doc)
@@ -368,3 +370,24 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
         raise HTTPException(status_code=500, detail="Internal server error")
 
     return JSONResponse(status_code=200, content={"status": True})
+
+
+@router.get("/report/getAll")
+async def get_all_reports(current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        reports = await reports_collection.find({"user_id": current_user.get("id")}, {"_id": 0, "id": 1, "title": 1, "created_at": 1, "status": 1}).to_list(length=None)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    for report in reports:
+        report["created_at"] = format_date(report["created_at"])
+        report["status"] = await get_status(report["status"])
+    return JSONResponse(status_code=200, content={"status": True, "reports": reports})
+
+# get all statuses
+@router.get("/status/getAll")
+async def get_all_statuses():
+    try:
+        statuses = await statuses_collection.find({}, {"_id": 0}).to_list(length=None)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    return JSONResponse(status_code=200, content={"status": True, "statuses": statuses})

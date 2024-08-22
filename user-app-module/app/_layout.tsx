@@ -43,6 +43,7 @@ const RootLayout = () => {
                   <Stack.Screen name="report-cleanup-success" />
                   <Stack.Screen name="profile" />
                   <Stack.Screen name="reports" />
+                  <Stack.Screen name="report/[id]" />
                 </Stack>
               </SafeAreaView>
             </TouchableWithoutFeedback>
