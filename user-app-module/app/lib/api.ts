@@ -85,3 +85,13 @@ export const getReports = async () => {
     throw error;
   }
 }
+
+export const getReport = async (id: number) => {
+  try {
+    const response = await instance.get(`/user/report/${id}`);
+    return response.data;
+  }
+  catch(error) {
+    throw error;
+  }
+}

@@ -317,7 +317,7 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
     report_index = index_doc["index"]
 
     # upload photos
-    photos_name = []
+    photos_key = []
     session = boto3.Session(
         aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
@@ -331,7 +331,7 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
         try:
             s3.meta.client.upload_fileobj(
                 photo.file, "eco-track", f"reports/{report_index}/{photo.filename}")
-            photos_name.append(photo.filename)
+            photos_key.append(f"reports/{report_index}/{photo.filename}")
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail="Internal server error")
@@ -342,7 +342,7 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
     try:
         s3.meta.client.upload_fileobj(
             video.file, "eco-track", f"reports/{report_index}/{video.filename}")
-        video = video.filename
+        video = f"reports/{report_index}/{video.filename}"
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -353,9 +353,9 @@ async def submit_report(current_user: Annotated[User, Depends(get_current_user)]
         "title": request_data.title,
         "description": request_data.description,
         "location": request_data.location.model_dump(),
-        "photos": photos_name,
+        "photos": photos_key,
         "video": video,
-        "status": 1,
+        "status": 0,
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     try:
@@ -381,10 +381,73 @@ async def get_all_reports(current_user: Annotated[User, Depends(get_current_user
     for report in reports:
         report["created_at"] = format_date(report["created_at"])
         report["status"] = await get_status(report["status"])
-        
+
     # add all statuses
     try:
         statuses = await statuses_collection.find({}, {"_id": 0}).to_list(length=None)
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     return JSONResponse(status_code=200, content={"status": True, "reports": reports, "statuses": statuses})
+
+
+@router.get("/report/{id}")
+async def get_report(id: int, current_user: Annotated[User, Depends(get_current_user)]):
+    try:
+        report = await reports_collection.find_one(
+            {
+                "id": id, "user_id": current_user.get("id")
+            },
+            {
+                "_id": 0,
+                "id": 0,
+                "user_id": 0,
+                "location.accurate_coordinates": 0,
+                "location.api_coordinates": 0,
+                "created_at": 0,
+                "status": 0
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    # get URL of photos and video
+    session = boto3.Session(
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+        region_name="eu-north-1"
+    )
+    s3 = session.client('s3', config=boto3.session.Config(
+        signature_version='s3v4'), endpoint_url="https://s3.eu-north-1.amazonaws.com")
+
+    photos = report["photos"]
+    for i in range(len(photos)):
+        try:
+            response = s3.generate_presigned_url(
+                'get_object',
+                Params={
+                    'Bucket': 'eco-track',
+                    'Key': photos[i]
+                },
+                ExpiresIn=3600
+            )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Internal server error")
+        photos[i] = response
+    report["photos"] = photos
+    
+    try:
+        response = s3.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': 'eco-track',
+                'Key': report["video"]
+            },
+            ExpiresIn=3600
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    report["video"] = response
+
+    return JSONResponse(status_code=200, content={"status": True, "report": report})

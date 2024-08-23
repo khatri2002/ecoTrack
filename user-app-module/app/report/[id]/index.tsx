@@ -1,11 +1,10 @@
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { Appbar, Button } from "react-native-paper";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useCallback, useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import LoadingDialog from "../components/LoadingDialog";
-import { useReportDataContext } from "../context/ReportDataProvider";
-import { getReports } from "../lib/api";
+import { useCallback, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useReportDataContext } from "../../context/ReportDataProvider";
+import { getReports } from "../../lib/api";
 
 type Report = {
   title: string;
@@ -119,7 +118,7 @@ const ReportStatus = () => {
               </View>
               <View className="mt-7 bg-white p-3">
                 <View className="flex-row items-center justify-center">
-                  <Button onPress={() => {}}>Click Here</Button>
+                  <Button onPress={() => router.navigate(`/report/${id}/details`)}>Click Here</Button>
                   <Text>to view submission details</Text>
                 </View>
               </View>

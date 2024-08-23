@@ -282,7 +282,7 @@ const ReportCleanupForm = () => {
         </Appbar.Header>
 
         <ScrollView className="px-3">
-          <View className="mt-12 flex-1">
+          <View className="mt-12 flex-1" onStartShouldSetResponder={() => true}>
             <View className="flex-col gap-y-6 rounded-lg bg-slate-200 p-3">
               <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
                 <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">

@@ -155,6 +155,7 @@ const PhotosModal = ({ visible, handleClose, photos, handleSetPhotos }: PhotosMo
           photo={photoView.photo}
           handleClose={handlePhotoViewClose}
           handleRetake={handleRetake}
+          mode="edit"
         />
 
         <CustomSnackbar
