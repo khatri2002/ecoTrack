@@ -8,6 +8,7 @@ import {
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AuthProvider from "./context/AuthProvider";
+import ReportDataProvider from "./context/ReportDataProvider";
 
 const RootLayout = () => {
   const theme = {
@@ -22,33 +23,35 @@ const RootLayout = () => {
   return (
     <>
       <AuthProvider>
-        <PaperProvider theme={theme}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            className="flex-1"
-          >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <SafeAreaView className="flex-1">
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="index" />
+        <ReportDataProvider>
+          <PaperProvider theme={theme}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              className="flex-1"
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <SafeAreaView className="flex-1">
+                  <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="index" />
 
-                  <Stack.Screen name="(auth)/signIn" />
-                  <Stack.Screen name="(auth)/signUp" />
-                  <Stack.Screen name="(auth)/otp_SignIn" />
-                  <Stack.Screen name="(auth)/verify-otp/[type]" />
+                    <Stack.Screen name="(auth)/signIn" />
+                    <Stack.Screen name="(auth)/signUp" />
+                    <Stack.Screen name="(auth)/otp_SignIn" />
+                    <Stack.Screen name="(auth)/verify-otp/[type]" />
 
-                  <Stack.Screen name="home" />
-                  <Stack.Screen name="report-cleanup-info" />
-                  <Stack.Screen name="report-cleanup-form" />
-                  <Stack.Screen name="report-cleanup-success" />
-                  <Stack.Screen name="profile" />
-                  <Stack.Screen name="reports" />
-                  <Stack.Screen name="report/[id]" />
-                </Stack>
-              </SafeAreaView>
-            </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
-        </PaperProvider>
+                    <Stack.Screen name="home" />
+                    <Stack.Screen name="report-cleanup-info" />
+                    <Stack.Screen name="report-cleanup-form" />
+                    <Stack.Screen name="report-cleanup-success" />
+                    <Stack.Screen name="profile" />
+                    <Stack.Screen name="reports" />
+                    <Stack.Screen name="report/[id]" />
+                  </Stack>
+                </SafeAreaView>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+          </PaperProvider>
+        </ReportDataProvider>
       </AuthProvider>
     </>
   );

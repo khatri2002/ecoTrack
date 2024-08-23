@@ -1,52 +1,65 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
+  RefreshControl,
   ScrollView,
   Text,
   TouchableHighlight,
-  TouchableNativeFeedback,
   View,
 } from "react-native";
 import { Appbar, Button } from "react-native-paper";
 import { getReports } from "./lib/api";
 import { router } from "expo-router";
 import LoadingDialog from "./components/LoadingDialog";
-
-type ReportType = {
-  title: string;
-  id: number;
-  created_at: string;
-  status: {
-    index: number;
-    status: string;
-    description: string;
-  };
-};
+import { useReportDataContext } from "./context/ReportDataProvider";
 
 const Reports = () => {
-  const [reports, setReports] = useState<ReportType[]>([]);
+  const { reports, handleSetReports, statuses, handleSetStatuses } =
+    useReportDataContext();
   const [loading, setLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
-    let ignore = false;
-    setLoading(true);
+    // only set reports and statuses if they are not already set
+    if (reports.length === 0 || statuses.length === 0) {
+      let ignore = false;
+      setLoading(true);
+      getReports()
+        .then((data) => {
+          if (!ignore && data.status) {
+            handleSetReports(data.reports);
+            handleSetStatuses(data.statuses);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          if (!ignore) {
+            setLoading(false);
+          }
+        });
+
+      return () => {
+        ignore = true;
+      };
+    }
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
     getReports()
       .then((data) => {
-        if (!ignore && data.status) {
-          setReports(data.reports);
+        if (data.status) {
+          handleSetReports(data.reports);
+          handleSetStatuses(data.statuses);
         }
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => {
-        if (!ignore) {
-          setLoading(false);
-        }
+        setRefreshing(false);
       });
-
-    return () => {
-      ignore = true;
-    };
   }, []);
 
   return (
@@ -69,7 +82,12 @@ const Reports = () => {
             </Button>
           </View>
         ) : (
-          <ScrollView className="flex-1">
+          <ScrollView
+            className="flex-1"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <View
               className="mt-3 flex-1 px-3"
               onStartShouldSetResponder={() => true}
@@ -78,13 +96,7 @@ const Reports = () => {
                 {reports.map((report, index) => (
                   <TouchableHighlight
                     key={index}
-                    onPress={() => {
-                      router.push({ pathname: `report/${report.id}`, params: {
-                        title: report.title,
-                        created_at: report.created_at,
-                        status: JSON.stringify(report.status),
-                      } });
-                    }}
+                    onPress={() => router.push(`/report/${report.id}`)}
                     className="rounded-lg"
                   >
                     <View className="rounded-lg bg-primary p-2">

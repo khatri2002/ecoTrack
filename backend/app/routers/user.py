@@ -381,13 +381,10 @@ async def get_all_reports(current_user: Annotated[User, Depends(get_current_user
     for report in reports:
         report["created_at"] = format_date(report["created_at"])
         report["status"] = await get_status(report["status"])
-    return JSONResponse(status_code=200, content={"status": True, "reports": reports})
-
-# get all statuses
-@router.get("/status/getAll")
-async def get_all_statuses():
+        
+    # add all statuses
     try:
         statuses = await statuses_collection.find({}, {"_id": 0}).to_list(length=None)
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
-    return JSONResponse(status_code=200, content={"status": True, "statuses": statuses})
+    return JSONResponse(status_code=200, content={"status": True, "reports": reports, "statuses": statuses})
