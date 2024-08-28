@@ -2,18 +2,18 @@ import { Appbar, Button, TextInput, HelperText } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
 import { ScrollView, Text, View } from "react-native";
-import PhotosModal from "./components/PhotosModal";
+import PhotosModal from "../components/PhotosModal";
 import { useEffect, useRef, useState } from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
-import CustomSnackbar from "./components/CustomSnackbar";
-import { getLocation } from "./lib/utils";
+import CustomSnackbar from "../components/CustomSnackbar";
+import { getLocation } from "../lib/utils";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAuthContext } from "./context/AuthProvider";
+import { useAuthContext } from "../context/AuthProvider";
 import { router } from "expo-router";
-import LoadingDialog from "./components/LoadingDialog";
-import { submitReport } from "./lib/api";
+import LoadingDialog from "../components/LoadingDialog";
+import { submitReport } from "../lib/api";
 import * as FileSystem from "expo-file-system";
-import ErrorDialog from "./components/ErrorDialog";
+import ErrorDialog from "../components/ErrorDialog";
 
 type Coordinates = {
   latitude: number;

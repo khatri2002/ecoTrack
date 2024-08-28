@@ -7,11 +7,11 @@ import {
   View,
 } from "react-native";
 import { Appbar } from "react-native-paper";
-import { useAuthContext } from "../../context/AuthProvider";
+import { useAuthContext } from "../../../context/AuthProvider";
 import { useEffect, useRef, useState } from "react";
-import { getReport } from "../../lib/api";
-import LoadingDialog from "../../components/LoadingDialog";
-import PhotoView from "../../components/PhotoView";
+import { getReport } from "../../../lib/api";
+import LoadingDialog from "../../../components/LoadingDialog";
+import PhotoView from "../../../components/PhotoView";
 import { useVideoPlayer, VideoView } from "expo-video";
 
 type Report = {

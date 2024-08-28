@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { Button } from "react-native-paper";
-import { useAuthContext } from "./context/AuthProvider";
+import { useAuthContext } from "../context/AuthProvider";
 import { router } from "expo-router";
 
 const Profile = () => {

@@ -33,20 +33,10 @@ const RootLayout = () => {
                 <SafeAreaView className="flex-1">
                   <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="index" />
-
-                    <Stack.Screen name="(auth)/signIn" />
-                    <Stack.Screen name="(auth)/signUp" />
-                    <Stack.Screen name="(auth)/otp_SignIn" />
-                    <Stack.Screen name="(auth)/verify-otp/[type]" />
-
-                    <Stack.Screen name="home" />
-                    <Stack.Screen name="report-cleanup-info" />
-                    <Stack.Screen name="report-cleanup-form" />
-                    <Stack.Screen name="report-cleanup-success" />
-                    <Stack.Screen name="profile" />
-                    <Stack.Screen name="reports" />
-                    <Stack.Screen name="report/[id]/index" />
-                    <Stack.Screen name="report/[id]/details" />
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen name="(auth)" />
+                    <Stack.Screen name="(submit-report)" />
+                    <Stack.Screen name="(view-report)" />        
                   </Stack>
                 </SafeAreaView>
               </TouchableWithoutFeedback>

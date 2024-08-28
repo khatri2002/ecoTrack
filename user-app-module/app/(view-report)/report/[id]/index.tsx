@@ -3,8 +3,8 @@ import { Appbar, Button } from "react-native-paper";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useCallback, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { useReportDataContext } from "../../context/ReportDataProvider";
-import { getReports } from "../../lib/api";
+import { getReports } from "../../../lib/api";
+import { useReportDataContext } from "../../../context/ReportDataProvider";
 
 type Report = {
   title: string;

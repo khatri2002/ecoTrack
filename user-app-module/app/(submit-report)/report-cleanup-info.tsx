@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { Appbar, Button, Checkbox } from "react-native-paper";
 import * as Location from 'expo-location';
-import PermissionsReqDialog from "./components/PermissionsReqDialog";
+import PermissionsReqDialog from "../components/PermissionsReqDialog";
 import { set } from "react-hook-form";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";

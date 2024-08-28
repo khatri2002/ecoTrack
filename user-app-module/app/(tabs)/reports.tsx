@@ -7,10 +7,10 @@ import {
   View,
 } from "react-native";
 import { Appbar, Button } from "react-native-paper";
-import { getReports } from "./lib/api";
+import { getReports } from "../lib/api";
 import { router } from "expo-router";
-import LoadingDialog from "./components/LoadingDialog";
-import { useReportDataContext } from "./context/ReportDataProvider";
+import LoadingDialog from "../components/LoadingDialog";
+import { useReportDataContext } from "../context/ReportDataProvider";
 
 const Reports = () => {
   const { reports, handleSetReports, statuses, handleSetStatuses } =
