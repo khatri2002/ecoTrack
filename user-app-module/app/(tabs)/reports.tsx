@@ -20,30 +20,27 @@ const Reports = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   useEffect(() => {
-    // only set reports and statuses if they are not already set
-    if (reports.length === 0 || statuses.length === 0) {
-      let ignore = false;
-      setLoading(true);
-      getReports()
-        .then((data) => {
-          if (!ignore && data.status) {
-            handleSetReports(data.reports);
-            handleSetStatuses(data.statuses);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          if (!ignore) {
-            setLoading(false);
-          }
-        });
+    let ignore = false;
+    setLoading(true);
+    getReports()
+      .then((data) => {
+        if (!ignore && data.status) {
+          handleSetReports(data.reports);
+          handleSetStatuses(data.statuses);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        if (!ignore) {
+          setLoading(false);
+        }
+      });
 
-      return () => {
-        ignore = true;
-      };
-    }
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -65,7 +62,7 @@ const Reports = () => {
 
   return (
     <>
-      <SafeAreaView edges={['top']} className="flex-1 bg-white">
+      <SafeAreaView edges={["top"]} className="flex-1 bg-white">
         <Appbar.Header className="bg-white" statusBarHeight={0} elevated={true}>
           <Appbar.Content title="Your Reports" />
         </Appbar.Header>
