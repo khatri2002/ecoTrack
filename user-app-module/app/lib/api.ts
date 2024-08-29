@@ -95,3 +95,13 @@ export const getReport = async (id: number) => {
     throw error;
   }
 }
+
+export const getFeed = async (page: number) => {
+  try {
+    const response = await instance.get(`/user/feed/${page}`);
+    return response.data;
+  }
+  catch(error) {
+    throw error;
+  }
+}

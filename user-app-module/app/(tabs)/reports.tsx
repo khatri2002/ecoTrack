@@ -11,6 +11,7 @@ import { getReports } from "../lib/api";
 import { router } from "expo-router";
 import LoadingDialog from "../components/LoadingDialog";
 import { useReportDataContext } from "../context/ReportDataProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Reports = () => {
   const { reports, handleSetReports, statuses, handleSetStatuses } =
@@ -64,7 +65,7 @@ const Reports = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white">
         <Appbar.Header className="bg-white" statusBarHeight={0} elevated={true}>
           <Appbar.Content title="Your Reports" />
         </Appbar.Header>
@@ -122,7 +123,7 @@ const Reports = () => {
             </View>
           </ScrollView>
         )}
-      </View>
+      </SafeAreaView>
 
       <LoadingDialog visible={loading} text="Getting Reports..." />
     </>

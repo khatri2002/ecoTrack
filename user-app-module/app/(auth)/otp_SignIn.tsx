@@ -8,6 +8,7 @@ import { useState } from "react";
 import { signInRequestOtp } from "../lib/api";
 import ErrorDialog from "../components/ErrorDialog";
 import { isCustomError } from "../lib/utils";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormData = {
   email: string;
@@ -61,7 +62,7 @@ const Otp_SignIn = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white px-5 pb-5">
+      <SafeAreaView className="flex-1 bg-white px-5 pb-5">
         <Image source={Logo} className="w-44 h-44 mt-8 mx-auto" />
 
         <View className="my-5">
@@ -119,7 +120,7 @@ const Otp_SignIn = () => {
             </View>
           </TouchableHighlight>
         </View>
-      </View>
+      </SafeAreaView>
 
       <ErrorDialog
         visible={errorDialog.visible}

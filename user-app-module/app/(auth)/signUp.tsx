@@ -7,6 +7,7 @@ import { useState } from "react";
 import { signUpRequestOTP } from "../lib/api";
 import { isCustomError } from "../lib/utils";
 import ErrorDialog from "../components/ErrorDialog";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormData = {
     firstName: string
@@ -120,8 +121,8 @@ const SignUp = () => {
     }
 
     return (
-        <>
-            <ScrollView className="flex-1 bg-white px-5" keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets={true}>
+        <SafeAreaView className="flex-1 bg-white">
+            <ScrollView className="flex-1 px-5" keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets={true}>
                 <Image
                     source={Logo}
                     className="w-44 h-44 mt-8 mx-auto"
@@ -356,7 +357,7 @@ const SignUp = () => {
                 description={errorDialog.description}
             />
 
-        </>
+        </SafeAreaView>
     );
 }
 

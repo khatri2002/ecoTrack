@@ -8,6 +8,7 @@ import { signInPassword } from "../lib/api";
 import { isCustomError } from "../lib/utils";
 import ErrorDialog from "../components/ErrorDialog";
 import { useAuthContext } from "../context/AuthProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type FormData = {
   email: string;
@@ -62,7 +63,7 @@ const SignIn = () => {
 
   return (
     <>
-      <View className="flex-1 flex flex-col bg-white justify-between px-5 pb-5">
+      <SafeAreaView className="flex-1 flex flex-col bg-white justify-between px-5 pb-5">
         <View className="w-full">
           <Image source={Logo} className="w-44 h-44 mt-8 mx-auto" />
 
@@ -165,7 +166,7 @@ const SignIn = () => {
             </TouchableHighlight>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
 
       <ErrorDialog
         visible={errorDialog.visible}

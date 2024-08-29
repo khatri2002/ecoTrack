@@ -4,13 +4,14 @@ import Fontisto from "@expo/vector-icons/Fontisto";
 import { Button } from "react-native-paper";
 import { useAuthContext } from "../context/AuthProvider";
 import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Profile = () => {
   const { userOut } = useAuthContext();
 
   return (
     <>
-      <View className="flex-1 bg-white px-5">
+      <SafeAreaView className="flex-1 bg-white px-5">
         <View className="flex-col gap-y-20 rounded-lg bg-slate-100 p-3">
           <View className="flex-col items-center gap-y-1 rounded-lg bg-white p-3">
             <View className="flex-row items-center gap-x-2">
@@ -39,7 +40,7 @@ const Profile = () => {
             Logout
           </Button>
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };

@@ -30,7 +30,7 @@ const RootLayout = () => {
               className="flex-1"
             >
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <SafeAreaView className="flex-1">
+                {/* <SafeAreaView className="flex-1"> */}
                   <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="index" />
                     <Stack.Screen name="(tabs)" />
@@ -38,7 +38,7 @@ const RootLayout = () => {
                     <Stack.Screen name="(submit-report)" />
                     <Stack.Screen name="(view-report)" />        
                   </Stack>
-                </SafeAreaView>
+                {/* </SafeAreaView> */}
               </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
           </PaperProvider>
