@@ -53,3 +53,13 @@ async def get_status(status: int):
         "status": status_doc["status"],
         "description": status_doc["description"]
     }
+
+
+async def get_cleanup_completed_index():
+        try:
+            status_doc = await statuses_collection.find_one(sort=[("index", -1)])
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Internal Server Error")
+        if not status_doc:
+            raise HTTPException(status_code=404, detail="Status not found")
+        return status_doc["index"]

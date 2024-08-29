@@ -1,4 +1,4 @@
-from fastapi import Query, Form, UploadFile
+from fastapi import Query
 from pydantic import BaseModel, field_validator, EmailStr
 from typing import Annotated
 import re
@@ -25,6 +25,11 @@ class UserSignUp(BaseModel):
             if not re.search(check['regex'], value):
                 raise ValueError(check['message'])
         return value
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def email_to_lower(cls, value: str) -> str:
+        return value.lower()
     
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -40,6 +45,11 @@ class SignUpVerifyOTP(UserSignUp):
 
 class UserSignIn(BaseModel):
     email: EmailStr
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def email_to_lower(cls, value: str) -> str:
+        return value.lower()
 
 class SignInPassword(UserSignIn):
     password: str

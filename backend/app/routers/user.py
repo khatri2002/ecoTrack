@@ -1,6 +1,6 @@
 from app.dependencies import get_current_user
 from app.db import user_collection, otp_collection, index_collection, reports_collection, statuses_collection
-from app.utils import generate_otp, get_text_hash, verify_text, create_access_token, format_date, get_status
+from app.utils import generate_otp, get_text_hash, verify_text, create_access_token, format_date, get_status, get_cleanup_completed_index
 from app.models import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP, User, ReportRequestData
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, Form
 from typing import Annotated
@@ -9,7 +9,6 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 import boto3
-from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import json
 
 load_dotenv()
@@ -276,28 +275,6 @@ async def get_user(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
 
 
-# @router.get("/test/getPresignedUrl")
-# async def get_presigned_url():
-#     session = boto3.Session(
-#
-#     )
-#     s3 = session.client('s3', config=boto3.session.Config(
-#         signature_version='s3v4'), endpoint_url="https://s3.eu-north-1.amazonaws.com")
-#     try:
-#         response = s3.generate_presigned_url(
-#             'get_object',
-#             Params={
-#                 'Bucket': 'eco-track',
-#                 'Key': 'B7ADEB21-E942-4783-80EF-06F043584E2A.jpg'
-#             },
-#             ExpiresIn=10000
-#         )
-#     except Exception as e:
-#         print(e)
-#         raise HTTPException(status_code=500, detail="Internal server error")
-#     print(response)
-#     return {"status": True, "url": response}
-
 @router.post("/report/submit")
 async def submit_report(current_user: Annotated[User, Depends(get_current_user)], data: Annotated[str, Form()], photos: Annotated[list[UploadFile], Form()], video: Annotated[UploadFile, Form()]):
     # validate data
@@ -433,10 +410,11 @@ async def get_report(id: int, current_user: Annotated[User, Depends(get_current_
                 ExpiresIn=3600
             )
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Internal server error")
+            raise HTTPException(
+                status_code=500, detail="Internal server error")
         photos[i] = response
     report["photos"] = photos
-    
+
     try:
         response = s3.generate_presigned_url(
             'get_object',
@@ -451,3 +429,132 @@ async def get_report(id: int, current_user: Annotated[User, Depends(get_current_
     report["video"] = response
 
     return JSONResponse(status_code=200, content={"status": True, "report": report})
+
+
+@router.get("/feed/{page}")
+async def get_feed(current_user: Annotated[User, Depends(get_current_user)], page: int):
+    if (page < 1):
+        raise HTTPException(status_code=400, detail="Invalid page number")
+    
+    index = await get_cleanup_completed_index()
+    try:
+        reports = await reports_collection.aggregate([
+            {
+                "$match": {
+                    "status": index
+                }
+            },
+            {
+                "$sort": {
+                    "admin.cleanup_completion_date": 1
+                }
+            },
+            {
+                "$skip": (page-1)*10
+            },
+            {
+                "$limit": 10
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "user_id": 1,
+                    "location.city": 1,
+                    "location.state": 1,
+                    "admin": 1
+                }
+            }
+        ]).to_list(length=None)
+
+        session = boto3.Session(
+            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+            region_name="eu-north-1"
+        )
+        s3 = session.client('s3', config=boto3.session.Config(
+            signature_version='s3v4'), endpoint_url="https://s3.eu-north-1.amazonaws.com")
+
+        for report in reports:
+            # get user name
+            user = await user_collection.find_one(
+                {"id": report["user_id"]}, {"_id": 0, "name": 1}
+            )
+            report["user"] = {
+                "name": user["name"],
+                "id": report["user_id"]
+            }
+            report.pop("user_id")
+
+            # get image URL
+            response = s3.generate_presigned_url(
+                'get_object',
+                Params={
+                    'Bucket': 'eco-track',
+                    'Key': report["admin"]["feed"]["before_img"]
+                },
+                ExpiresIn=3600
+            )
+            report["admin"]["feed"]["before_img"] = response
+
+            response = s3.generate_presigned_url(
+                'get_object',
+                Params={
+                    'Bucket': 'eco-track',
+                    'Key': report["admin"]["feed"]["after_img"]
+                },
+                ExpiresIn=3600
+            )
+            report["admin"]["feed"]["after_img"] = response
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    return JSONResponse(status_code=200, content={"status": True, "reports": reports})
+
+
+# dummy data adder
+# @router.post("/addDummyData")
+# async def add_dummy_data():
+#     try:
+#         for i in range(1, 100):
+#             doc = {
+#                 "id": i+1,
+#                 "user_id": 1,
+#                 "title": "Dump side at corner",
+#                 "description": "There's a dump site at the corner of street. Which needs to be cleaned.",
+#                 "location": {
+#                     "city": str(i+1),
+#                     "state": "Maharashtra",
+#                     "address": "Yashodham, P/S Ward, Zone 4, Mumbai, Maharashtra, 400063, India",
+#                     "postal_code": "400063",
+#                     "additional_address": None,
+#                     "accurate_coordinates": {
+#                         "latitude": 19.168972240125424,
+#                         "longitude": 72.85290615086565
+#                     },
+#                     "api_coordinates": {
+#                         "latitude": 19.169456369374913,
+#                         "longitude": 72.8528362124508
+#                     }
+#                 },
+#                 "photos": [
+#                     "reports/1/D1AD2825-1306-40DE-A75F-E31CDB1A1CDD.jpg",
+#                     "reports/1/BE974EBF-E0BD-4365-99E9-E208E8BB3BB6.jpg",
+#                     "reports/1/8A8C10C9-679C-483F-A6E2-D070D992E485.jpg"
+#                 ],
+#                 "video": "reports/1/41DA55AC-2CFF-4917-BC00-1EFC304CA416.mp4",
+#                 "status": 3,
+#                 "created_at": "2024-08-23 12:53:40",
+#                 "admin": {
+#                     "feed": {
+#                         "after_img": "reports/1/feed/dummy_Img_2.png",
+#                         "before_img": "reports/1/feed/dummy_img.png"
+#                     },
+#                     "cleanup_completion_date": "2024-08-24"
+#                 }
+#             }
+
+#             await reports_collection.insert_one(doc)
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=500, detail="Internal server error")
+#     return JSONResponse(status_code=200, content={"status": True})
