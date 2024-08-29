@@ -71,7 +71,7 @@ const ReportCleanUpInfo = () => {
     <>
       <SafeAreaView className="flex-1 bg-white">
         <Appbar.Header className="bg-white" elevated={true} statusBarHeight={0}>
-          <Appbar.BackAction onPress={() => {}} />
+          <Appbar.BackAction onPress={() => router.back()} />
           <Appbar.Content title="Report Cleanup" />
         </Appbar.Header>
         <View className="bg-slate-100 m-3 p-3 rounded-lg">
