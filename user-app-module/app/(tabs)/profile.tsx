@@ -11,20 +11,20 @@ const Profile = () => {
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white px-5">
-        <View className="flex-col gap-y-20 rounded-lg bg-slate-100 p-3">
-          <View className="flex-col items-center gap-y-1 rounded-lg bg-white p-3">
-            <View className="flex-row items-center gap-x-2">
-              <AntDesign name="user" size={24} color="black" />
-              <Text className="text-base">Jay Khatri</Text>
-            </View>
-            <View className="flex-row items-center gap-x-2">
-              <Fontisto name="email" size={24} color="black" />
-              <Text className="text-base">jaykhatri@gmail.com</Text>
-            </View>
-            <View className="flex-row items-center gap-x-2">
-              <AntDesign name="phone" size={24} color="black" />
-              <Text className="text-base">+91 70465 66942</Text>
+      <SafeAreaView edges={['top']} className="flex-1 bg-white px-5">
+        <View className="space-y-20 rounded-lg bg-slate-100 p-3">
+          <View className="rounded-lg bg-white p-3">
+            <View className="flex-row gap-x-2 items-center justify-center">
+              <View className="space-y-1">
+                <AntDesign name="user" size={22} color="black" />
+                <Fontisto name="email" size={22} color="black" />
+                <AntDesign name="phone" size={22} color="black" />
+              </View>
+              <View className="space-y-1">
+                <Text className="text-base">Jay Khatri</Text>
+                <Text className="text-base">jaykhatri@gmail.com</Text>
+                <Text className="text-base">+91 70465 66942</Text>
+              </View>
             </View>
           </View>
 

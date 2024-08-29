@@ -23,23 +23,23 @@ const CustomSnackbar = ({
   text,
 }: CustomSnackbarProps) => {
   return (
-    <Snackbar
-      wrapperStyle={position==="top" ? {top: 0} : {}}
-      visible={visible}
-      onDismiss={onDismiss}
-      action={action}
-      duration={3000}
-      className={varient === "error" ? "bg-red-600" : ""}
-    >
-      {varient === "error" ? (
-        <View className="flex-row items-center gap-x-2">
-          <Ionicons name="alert-circle" size={24} color="white" />
+      <Snackbar
+        wrapperStyle={position === "top" ? { top: 53 } : {}}
+        visible={visible}
+        onDismiss={onDismiss}
+        action={action}
+        duration={3000}
+        className={varient === "error" ? "bg-red-600" : ""}
+      >
+        {varient === "error" ? (
+          <View className="flex-row items-center gap-x-2">
+            <Ionicons name="alert-circle" size={24} color="white" />
+            <Text className="font-semibold text-white">{text}</Text>
+          </View>
+        ) : (
           <Text className="font-semibold text-white">{text}</Text>
-        </View>
-      ) : (
-        <Text className="font-semibold text-white">{text}</Text>
-      )}
-    </Snackbar>
+        )}
+      </Snackbar>
   );
 };
 

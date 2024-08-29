@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   Image,
   ScrollView,
@@ -13,6 +13,7 @@ import { getReport } from "../../../lib/api";
 import LoadingDialog from "../../../components/LoadingDialog";
 import PhotoView from "../../../components/PhotoView";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Report = {
   title: string;
@@ -74,7 +75,7 @@ const ReportStatus = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white">
         {report && (
           <>
             <Appbar.Header
@@ -82,7 +83,7 @@ const ReportStatus = () => {
               statusBarHeight={0}
               elevated={true}
             >
-              <Appbar.BackAction onPress={() => {}} />
+              <Appbar.BackAction onPress={() => router.back()} />
               <Appbar.Content title={report.title} />
             </Appbar.Header>
             <ScrollView>
@@ -196,7 +197,7 @@ const ReportStatus = () => {
             </ScrollView>
           </>
         )}
-      </View>
+      </SafeAreaView>
 
       <LoadingDialog visible={loading} text="Getting Report Details..." />
       <PhotoView

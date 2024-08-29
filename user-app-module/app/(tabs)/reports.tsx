@@ -65,7 +65,7 @@ const Reports = () => {
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-white">
+      <SafeAreaView edges={['top']} className="flex-1 bg-white">
         <Appbar.Header className="bg-white" statusBarHeight={0} elevated={true}>
           <Appbar.Content title="Your Reports" />
         </Appbar.Header>

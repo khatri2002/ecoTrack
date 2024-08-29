@@ -64,11 +64,7 @@ const Home = () => {
 
   return (
     <>
-      {/* <Button mode="contained" className="mt-6" onPress={() => router.navigate("report-cleanup-info")}>
-        Report Cleanup
-      </Button> */}
-
-      <SafeAreaView className="flex-1 bg-white">
+      <SafeAreaView edges={['top']} className="flex-1 bg-white">
         <FlatList
           data={reports}
           renderItem={({ item }) => (

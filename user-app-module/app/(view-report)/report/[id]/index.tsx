@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { getReports } from "../../../lib/api";
 import { useReportDataContext } from "../../../context/ReportDataProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Report = {
   title: string;
@@ -67,9 +68,9 @@ const ReportStatus = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white">
         <Appbar.Header className="bg-white" statusBarHeight={0} elevated={true}>
-          <Appbar.BackAction onPress={() => {}} />
+          <Appbar.BackAction onPress={() => router.back()} />
           <Appbar.Content title="Report Status" />
         </Appbar.Header>
 
@@ -125,7 +126,7 @@ const ReportStatus = () => {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </>
   );
 };

@@ -52,9 +52,14 @@ const PhotosModal = ({ visible, handleClose, photos, handleSetPhotos }: PhotosMo
       return;
     }
 
-    let result = await ImagePicker.launchCameraAsync();
-    if (!result.canceled) {
-      handleSetPhotos([...photos, result.assets[0].uri]);
+    try {
+      let result = await ImagePicker.launchCameraAsync();
+      if (!result.canceled) {
+        handleSetPhotos([...photos, result.assets[0].uri]);
+      }
+    }
+    catch(error) {
+      console.log(error);
     }
   };
 

@@ -14,6 +14,7 @@ import LoadingDialog from "../components/LoadingDialog";
 import { submitReport } from "../lib/api";
 import * as FileSystem from "expo-file-system";
 import ErrorDialog from "../components/ErrorDialog";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Coordinates = {
   latitude: number;
@@ -275,15 +276,15 @@ const ReportCleanupForm = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white">
         <Appbar.Header className="bg-white" statusBarHeight={0} elevated={true}>
-          <Appbar.BackAction onPress={() => {}} />
+          <Appbar.BackAction onPress={() => router.back()} />
           <Appbar.Content title="Report Cleanup" />
         </Appbar.Header>
 
         <ScrollView className="px-3">
           <View className="mt-12 flex-1" onStartShouldSetResponder={() => true}>
-            <View className="flex-col gap-y-6 rounded-lg bg-slate-200 p-3">
+            <View className="flex-col gap-y-6 rounded-lg bg-slate-100 p-3">
               <View className="relative flex-col gap-y-2 rounded-lg bg-white px-3 pb-5 pt-5">
                 <View className="absolute -top-4 left-5 rounded-lg bg-primary-800">
                   <Text className="px-3 text-sm font-semibold text-white">
@@ -620,7 +621,7 @@ const ReportCleanupForm = () => {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
 
       <PhotosModal
         visible={isPhotosModalVisible}

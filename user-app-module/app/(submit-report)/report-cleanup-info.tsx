@@ -6,6 +6,7 @@ import PermissionsReqDialog from "../components/PermissionsReqDialog";
 import { set } from "react-hook-form";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const ReportCleanUpInfo = () => {
   const [checked, setChecked] = useState(false);
@@ -68,12 +69,12 @@ const ReportCleanUpInfo = () => {
 
   return (
     <>
-      <View className="flex-1 bg-white">
+      <SafeAreaView className="flex-1 bg-white">
         <Appbar.Header className="bg-white" elevated={true} statusBarHeight={0}>
           <Appbar.BackAction onPress={() => {}} />
           <Appbar.Content title="Report Cleanup" />
         </Appbar.Header>
-        <View className="bg-slate-200 m-3 p-3 rounded-lg">
+        <View className="bg-slate-100 m-3 p-3 rounded-lg">
           <Text className="text-base text-center font-semibold mb-8">
             Important Information Before Submitting a Cleanup Report
           </Text>
@@ -137,7 +138,7 @@ const ReportCleanUpInfo = () => {
             </Button>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
 
       <PermissionsReqDialog 
         visible={permissionsReqDialog.visible} 
