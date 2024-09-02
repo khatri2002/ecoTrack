@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from starlette.responses import JSONResponse
-from .routers import user
+from .routers import user, admin
 
 app = FastAPI()
 
 app.include_router(user.router, prefix="/user", tags=["user"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])

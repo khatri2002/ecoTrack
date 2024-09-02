@@ -1,7 +1,7 @@
-from app.dependencies import get_current_user
+from dependencies.user import get_current_user
 from app.db import user_collection, otp_collection, index_collection, reports_collection, statuses_collection
 from app.utils import generate_otp, get_text_hash, verify_text, create_access_token, format_date, get_status, get_cleanup_completed_index
-from app.models import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP, User, ReportRequestData
+from models.user import SignUpRequestOTP, SignUpVerifyOTP, SignInPassword, SignInRequestOTP, SignInVerifyOTP, User, ReportRequestData
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, Form
 from typing import Annotated
 from starlette.responses import JSONResponse
@@ -509,52 +509,3 @@ async def get_feed(current_user: Annotated[User, Depends(get_current_user)], pag
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
     return JSONResponse(status_code=200, content={"status": True, "reports": reports})
-
-
-# dummy data adder
-# @router.post("/addDummyData")
-# async def add_dummy_data():
-#     try:
-#         for i in range(1, 100):
-#             doc = {
-#                 "id": i+1,
-#                 "user_id": 1,
-#                 "title": "Dump side at corner",
-#                 "description": "There's a dump site at the corner of street. Which needs to be cleaned.",
-#                 "location": {
-#                     "city": str(i+1),
-#                     "state": "Maharashtra",
-#                     "address": "Yashodham, P/S Ward, Zone 4, Mumbai, Maharashtra, 400063, India",
-#                     "postal_code": "400063",
-#                     "additional_address": None,
-#                     "accurate_coordinates": {
-#                         "latitude": 19.168972240125424,
-#                         "longitude": 72.85290615086565
-#                     },
-#                     "api_coordinates": {
-#                         "latitude": 19.169456369374913,
-#                         "longitude": 72.8528362124508
-#                     }
-#                 },
-#                 "photos": [
-#                     "reports/1/D1AD2825-1306-40DE-A75F-E31CDB1A1CDD.jpg",
-#                     "reports/1/BE974EBF-E0BD-4365-99E9-E208E8BB3BB6.jpg",
-#                     "reports/1/8A8C10C9-679C-483F-A6E2-D070D992E485.jpg"
-#                 ],
-#                 "video": "reports/1/41DA55AC-2CFF-4917-BC00-1EFC304CA416.mp4",
-#                 "status": 3,
-#                 "created_at": "2024-08-23 12:53:40",
-#                 "admin": {
-#                     "feed": {
-#                         "after_img": "reports/1/feed/dummy_Img_2.png",
-#                         "before_img": "reports/1/feed/dummy_img.png"
-#                     },
-#                     "cleanup_completion_date": "2024-08-24"
-#                 }
-#             }
-
-#             await reports_collection.insert_one(doc)
-#     except Exception as e:
-#         print(e)
-#         raise HTTPException(status_code=500, detail="Internal server error")
-#     return JSONResponse(status_code=200, content={"status": True})
