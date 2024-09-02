@@ -36,3 +36,8 @@ async def admin_login(admin: adminSignIn):
         raise HTTPException(status_code=500, detail="Internal server error")
     
     return JSONResponse(status_code=200, content={"status": True, "access_token": token})
+
+
+@router.get("/getUser")
+async def get_admin_user(current_user: Annotated[adminUser, Depends(get_current_admin_user)]):
+    return current_user
