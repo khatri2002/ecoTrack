@@ -4,7 +4,7 @@ from fastapi import Query
 
 # admin sign in request
 
-class adminSignIn(BaseModel):
+class adminLogin(BaseModel):
     username: Annotated[str, Query(min_length=1)]
     password: Annotated[str, Query(min_length=1)]
 

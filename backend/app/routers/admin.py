@@ -3,15 +3,15 @@ from starlette.responses import JSONResponse
 from app.utils import verify_text, create_access_token
 from fastapi import HTTPException, Depends
 from app.db import admin_user_collection
-from models.admin import adminSignIn, adminUser
+from models.admin import adminLogin, adminUser
 from dependencies.admin import get_current_admin_user
 from typing import Annotated
 
 
 router = APIRouter()
 
-@router.post("/signIn")
-async def admin_login(admin: adminSignIn):
+@router.post("/login")
+async def admin_login(admin: adminLogin):
     try:
 
         # check if the admin exists
