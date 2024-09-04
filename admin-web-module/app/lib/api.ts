@@ -12,7 +12,8 @@ export const login = async (data: LoginData) => {
 
     return response.data;
   } catch (error) {
-    return error;
+    if (error.response.data) return error.response.data;
+    else throw error;
   }
 };
 

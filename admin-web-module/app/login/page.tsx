@@ -18,6 +18,8 @@ type Inputs = {
 
 const LoginPage = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { userIn } = useAuthContext();
   const router = useRouter();
@@ -25,27 +27,35 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setLoading(true);
     login(data)
       .then((response) => {
         if (response.status) {
           userIn(response.access_token);
           router.push("/");
+        } else {
+          setError("username", {});
+          setError("password", {});
+          setErrorMessage(response.message);
         }
       })
-      .catch((error) => {
-        // TODO: handle error
-        console.log(error);
+      .catch(() => {
+        setErrorMessage("Something went wrong. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
     <>
       <div className="flex h-screen justify-center items-center">
-        <div className="flex bg-white rounded-lg w-7/12 shadow-lg">
-          <div className="px-5 py-20 w-1/2">
+        <div className="flex bg-white rounded-lg w-11/12 md:w-7/12 shadow-lg flex-col md:flex-row">
+          <div className="px-5 py-20 lg:w-1/2 w-full">
             <div className="flex gap-x-2 items-center">
               <Image
                 alt="ecoTrack logo"
@@ -95,16 +105,21 @@ const LoginPage = () => {
                   required: true,
                 })}
               />
+              {errorMessage && (
+                <p className="mt-3 text-small text-red-600 text-center">
+                  {errorMessage}
+                </p>
+              )}
               <Button
                 className="mt-5 w-full bg-black text-white"
-                // isLoading={true}
+                isLoading={loading}
                 type="submit"
               >
                 Login
               </Button>
             </form>
           </div>
-          <div className="w-1/2 py-2 pr-2">
+          <div className="w-1/2 py-2 pr-2 hidden lg:block">
             <div className="relative h-full">
               <Image
                 alt="environment"

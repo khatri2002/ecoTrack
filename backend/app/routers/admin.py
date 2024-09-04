@@ -12,22 +12,22 @@ router = APIRouter()
 
 @router.post("/login")
 async def admin_login(admin: adminLogin):
+    invalid_credentials_response = JSONResponse(status_code=400, content={
+        "status": False,
+        "type": "invalid_entry",
+        "message": "Invalid username or password"
+    })
+
     try:
 
         # check if the admin exists
         admin_doc = await admin_user_collection.find_one({"username": admin.username})
         if not admin_doc:
-            return JSONResponse(status_code=400, content={
-                "status": False,
-                "type": "invalid_credentials",
-            })
+            return invalid_credentials_response
 
         # check if the password is correct
         if not verify_text(admin.password, admin_doc["password"]):
-            return JSONResponse(status_code=400, content={
-                "status": False,
-                "type": "invalid_credentials",
-            })
+            return invalid_credentials_response
         
         # create a jwt token
         token = create_access_token({"username": admin.username, "role": "admin"})
