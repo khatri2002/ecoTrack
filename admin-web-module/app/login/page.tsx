@@ -10,6 +10,7 @@ import { EyeSlashFilledIcon } from "../components/icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../components/icons/EyeFilledIcon";
 import { useAuthContext } from "../context/AuthProvider";
 import { login } from "../lib/api";
+import { WithoutAuth } from "../components/auth/WithoutAuth";
 
 type Inputs = {
   username: string;
@@ -136,4 +137,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default WithoutAuth(LoginPage);
