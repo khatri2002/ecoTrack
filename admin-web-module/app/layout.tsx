@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
+
 import AuthProvider from "./context/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,7 +14,9 @@ export default function RootLayout({
     <html lang="en">
       <head />
       <body className={inter.className} suppressHydrationWarning={true}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <div className="bg-slate-200">{children}</div>
+        </AuthProvider>
       </body>
     </html>
   );

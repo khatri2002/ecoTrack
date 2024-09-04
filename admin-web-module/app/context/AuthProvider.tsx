@@ -28,12 +28,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     let ignore = false;
     const token = localStorage.getItem("token");
 
     if (token) {
       instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setLoading(true);
       getUser()
         .then((user) => {
           if (!ignore) {
@@ -45,9 +45,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           setIsLoggedIn(false);
         })
         .finally(() => {
-          setLoading(false);
+          if (!ignore) setLoading(false);
         });
-    }
+    } else setLoading(false);
 
     return () => {
       ignore = true;
@@ -55,6 +55,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const userIn = (access_token: string) => {
+    setLoading(true);
     localStorage.setItem("token", access_token);
     instance.defaults.headers.common["Authorization"] =
       `Bearer ${access_token}`;
@@ -65,6 +66,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       })
       .catch(() => {
         setIsLoggedIn(false);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

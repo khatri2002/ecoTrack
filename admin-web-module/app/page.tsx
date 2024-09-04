@@ -1,23 +1,18 @@
 "use client";
 
-import { redirect } from "next/navigation";
-
+import { WithAuth } from "./components/auth/WithAuth";
 import { useAuthContext } from "./context/AuthProvider";
 
-export default function Dashboard() {
-  const { isLoggedIn, loading } = useAuthContext();
-
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (!isLoggedIn) {
-    redirect("/login");
-  }
+const Dashboard = () => {
+  const { user } = useAuthContext();
 
   return (
     <>
       <h1>dashboard</h1>
+      <p>id: {user!.id}</p>
+      <p>username: {user!.username}</p>
     </>
   );
-}
+};
+
+export default WithAuth(Dashboard);
