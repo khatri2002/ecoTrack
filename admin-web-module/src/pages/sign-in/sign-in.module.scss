@@ -1,0 +1,48 @@
+.container {
+  @apply relative flex h-screen flex-col-reverse md:flex-row;
+
+  .logoContainer {
+    @apply absolute left-0 right-0 top-4 mx-auto flex items-center justify-center gap-x-2 md:left-8 md:justify-start;
+
+    img {
+      @apply h-7 md:h-10;
+    }
+
+    span {
+      @apply text-sm font-semibold text-[#F5F3ED] md:text-base md:text-[#1B4F4A];
+    }
+  }
+
+  .imgContainer {
+    @apply flex h-[40vh] w-full items-center justify-center bg-[#F5F3ED] px-7 py-5 md:h-auto md:w-1/2;
+
+    img {
+      @apply w-60 md:w-[60%];
+    }
+  }
+
+  .contentContainer {
+    @apply flex h-[60vh] w-full items-center justify-center bg-[#1B4F4A] py-8 text-white md:h-auto md:w-1/2;
+
+    .child {
+      @apply mt-8 w-3/4 space-y-6 md:mt-0 md:w-1/2;
+
+      .header {
+        h1 {
+          @apply mb-0 text-3xl font-semibold md:mb-2 md:text-4xl;
+        }
+        span {
+          @apply text-sm md:text-base;
+        }
+      }
+
+      .fields {
+        @apply flex flex-col gap-y-3;
+      }
+
+      .footer {
+        @apply flex justify-center;
+      }
+    }
+  }
+}
