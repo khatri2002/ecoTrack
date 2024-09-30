@@ -1,16 +1,15 @@
-import { useAuth } from "../../context/AuthProvider";
-
-const DashboardPage = () => {
-  const { user, signOutAction } = useAuth();
-  if (user == null) console.log("user is null!");
+const DashBoardPage = () => {
   return (
-    <>
-      <h1>dashboard</h1>
-      <h1>{user?.id}</h1>
-      <h1>{user?.username}</h1>
-      <button onClick={signOutAction}>logout</button>
-    </>
+    <div>
+      <h1>dashboard page</h1>
+      <h1>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt amet,
+        corporis quasi commodi architecto nulla, sapiente, neque beatae suscipit
+        ab voluptate esse? Fuga, eos rem. Id delectus aut labore eligendi
+        architecto eius.
+      </h1>
+    </div>
   );
 };
 
-export default DashboardPage;
+export default DashBoardPage;

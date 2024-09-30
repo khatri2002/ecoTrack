@@ -1,0 +1,76 @@
+:root {
+  --drawer-width: 240px;
+  --content-width: calc(100% - var(--drawer-width));
+}
+
+.drawer {
+  .logoContainer {
+    @apply m-auto flex items-center gap-x-2;
+
+    img {
+      @apply h-12;
+    }
+
+    span {
+      @apply font-medium;
+    }
+  }
+
+  .divider {
+    @apply border-white;
+  }
+
+  .navLink {
+    @apply w-full rounded-md;
+
+    .icon {
+      @apply text-white;
+    }
+
+    &.active {
+      @apply bg-white text-black;
+
+      .icon {
+        @apply text-black;
+      }
+    }
+  }
+}
+
+.drawerTemporary {
+  @apply min-[0px]:block sm:hidden;
+}
+.drawerTemporary :global .MuiDrawer-paper {
+  @apply w-[--drawer-width] bg-black text-white;
+}
+
+.container {
+  @apply flex;
+
+  .appBar {
+    @apply sm:w-[--content-width];
+
+    .toolbar {
+      @apply bg-black;
+
+      .iconButton {
+        @apply mr-4 sm:!hidden;
+      }
+    }
+  }
+
+  .nav {
+    @apply sm:w-[--drawer-width] sm:shrink-0;
+
+    .drawerPermanent {
+      @apply min-[0px]:hidden sm:block;
+    }
+    .drawerPermanent :global .MuiDrawer-paper {
+      @apply w-[--drawer-width] border-white bg-black px-3 text-white;
+    }
+  }
+
+  .main {
+    @apply w-[--content-width] grow p-6;
+  }
+}

@@ -2,8 +2,7 @@ import axios, { AxiosError } from "axios";
 import { SignInInputs } from "./types";
 
 export const instance = axios.create({
-  baseURL: "http://192.168.0.143:8000",
-  timeout: 1000,
+  baseURL: "http://192.168.29.84:8000",
 });
 
 export const signIn = async (data: SignInInputs) => {
@@ -20,7 +19,7 @@ export const signIn = async (data: SignInInputs) => {
       // invalid username or password
       return error.response.data;
     } else {
-      // unkown or internal server error
+      // unknown or internal server error
       throw error;
     }
   }
