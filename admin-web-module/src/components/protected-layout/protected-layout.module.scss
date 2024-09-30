@@ -20,18 +20,22 @@
     @apply border-white;
   }
 
-  .navLink {
-    @apply w-full rounded-md;
+  .list {
+    @apply px-3;
 
-    .icon {
-      @apply text-white;
-    }
-
-    &.active {
-      @apply bg-white text-black;
+    .navLink {
+      @apply w-full rounded-md;
 
       .icon {
-        @apply text-black;
+        @apply text-white;
+      }
+
+      &.active {
+        @apply bg-white text-black;
+
+        .icon {
+          @apply text-black;
+        }
       }
     }
   }
@@ -66,7 +70,7 @@
       @apply min-[0px]:hidden sm:block;
     }
     .drawerPermanent :global .MuiDrawer-paper {
-      @apply w-[--drawer-width] border-white bg-black px-3 text-white;
+      @apply w-[--drawer-width] border-white bg-black text-white;
     }
   }
 

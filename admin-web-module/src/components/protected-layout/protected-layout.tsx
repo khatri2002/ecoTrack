@@ -52,7 +52,7 @@ const ProtectedLayout = () => {
         </div>
       </Toolbar>
       <Divider className={styles.divider} />
-      <List>
+      <List className={styles.list}>
         {navItems.map((item, index) => (
           <ListItem key={index} disablePadding>
             <NavLink

@@ -15,3 +15,9 @@ export type AuthContextValue = {
   signInAction: (token: string) => void;
   signOutAction: () => void;
 };
+
+export type NavItems = Array<{
+  name: string;
+  path: string;
+  icon: React.ReactNode;
+}>;
