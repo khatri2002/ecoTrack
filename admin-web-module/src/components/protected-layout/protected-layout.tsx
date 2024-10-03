@@ -1,5 +1,7 @@
-import { useAuth } from "../../context/AuthProvider";
+import { useState } from "react";
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
+
+import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -10,14 +12,15 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
-import Logo from "../../assets/images/ecoTrack_logo.png";
-import styles from "./protected-layout.module.scss";
-import navItems from "./nav-items";
+
 import classNames from "classnames";
+
+import Logo from "../../assets/images/ecoTrack_logo.png";
+import { useAuth } from "../../context/AuthProvider";
+import navItems from "./nav-items";
+import styles from "./protected-layout.module.scss";
 
 const ProtectedLayout = () => {
   const { loading, loggedIn } = useAuth();

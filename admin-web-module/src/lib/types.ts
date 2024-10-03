@@ -21,3 +21,9 @@ export type NavItems = Array<{
   path: string;
   icon: React.ReactNode;
 }>;
+
+export type NumericCards = Array<{
+  name: string;
+  icon: React.ReactNode;
+  key: string;
+}>;

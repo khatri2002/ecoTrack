@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import * as api from "../lib/api";
-import * as utils from "../lib/utils";
 import { Outlet, useNavigate } from "react-router-dom";
+
+import * as api from "../lib/api";
 import { AuthContextValue, User } from "../lib/types";
+import * as utils from "../lib/utils";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 

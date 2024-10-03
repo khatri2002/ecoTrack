@@ -1,4 +1,5 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
+
 import { NavItems } from "../../lib/types";
 
 const navItems: NavItems = [

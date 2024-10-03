@@ -1,19 +1,21 @@
-import { Alert, IconButton, Snackbar } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Logo from "../../assets/images/ecoTrack_logo.png";
-import SavePlanetImg from "../../assets/images/save-planet-concept-with-people-taking-care-earth.png";
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+import LoginIcon from "@mui/icons-material/Login";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useState } from "react";
-import Input from "../../components/input/input";
-import { useTheme } from "@mui/material/styles";
-import styles from "./sign-in.module.scss";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { SignInInputs } from "../../lib/types";
-import * as api from "../../lib/api";
 import { LoadingButton } from "@mui/lab";
-import LoginIcon from "@mui/icons-material/Login";
+import { Alert, IconButton, Snackbar } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+import Logo from "../../assets/images/ecoTrack_logo.png";
+import SavePlanetImg from "../../assets/images/save-planet-concept-with-people-taking-care-earth.png";
+import Input from "../../components/input/input";
 import { useAuth } from "../../context/AuthProvider";
+import * as api from "../../lib/api";
+import { SignInInputs } from "../../lib/types";
+import styles from "./sign-in.module.scss";
 
 const SignInPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);

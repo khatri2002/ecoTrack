@@ -1,7 +1,9 @@
 import { FieldError, UseFormRegister } from "react-hook-form";
-import styles from "./input.module.scss";
-import { SignInInputs } from "../../lib/types";
+
 import classNames from "classnames";
+
+import { SignInInputs } from "../../lib/types";
+import styles from "./input.module.scss";
 
 interface InputProps {
   label: string;

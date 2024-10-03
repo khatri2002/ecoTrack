@@ -75,6 +75,6 @@
   }
 
   .main {
-    @apply w-[--content-width] grow p-6;
+    @apply w-[--content-width] grow bg-slate-50 p-6;
   }
 }

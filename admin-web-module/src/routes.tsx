@@ -1,7 +1,7 @@
+import ProtectedLayout from "./components/protected-layout/protected-layout";
+import AuthProvider from "./context/AuthProvider";
 import DashboardPage from "./pages/dashboard/dashboard";
 import SignInPage from "./pages/sign-in/sign-in";
-import AuthProvider from "./context/AuthProvider";
-import ProtectedLayout from "./components/protected-layout/protected-layout";
 
 export const routes = [
   {

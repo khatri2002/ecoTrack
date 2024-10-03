@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+
 import { SignInInputs } from "./types";
 
 export const instance = axios.create({

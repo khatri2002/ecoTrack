@@ -1,0 +1,17 @@
+.container {
+  @apply grid grid-cols-2 gap-2;
+
+  .card {
+    @apply flex items-center gap-4 rounded-xl border bg-white p-5;
+
+    .iconContainer {
+      svg {
+        @apply rounded-full bg-slate-200 p-3 text-6xl;
+      }
+    }
+
+    h3 {
+      @apply mt-1 text-4xl font-semibold;
+    }
+  }
+}
