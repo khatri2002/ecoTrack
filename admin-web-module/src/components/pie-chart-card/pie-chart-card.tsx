@@ -1,7 +1,14 @@
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 
-const PieChartCard = () => {
+import { PieChartDataValues } from "../../lib/types";
+
+interface PieChartCardProps {
+  pieChartDataValues: PieChartDataValues;
+}
+
+const PieChartCard = ({ pieChartDataValues }: PieChartCardProps) => {
+  if (!pieChartDataValues) return null;
   const options = {
     chart: {
       height: "350px",
@@ -44,16 +51,7 @@ const PieChartCard = () => {
       {
         type: "pie",
         name: "Spots Reported",
-        data: [
-          {
-            name: "Gujarat",
-            y: 100,
-          },
-          {
-            name: "Maharashtra",
-            y: 25,
-          },
-        ],
+        data: pieChartDataValues,
       },
     ],
   };

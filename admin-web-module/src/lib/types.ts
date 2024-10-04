@@ -27,3 +27,17 @@ export type NumericCards = Array<{
   icon: React.ReactNode;
   key: string;
 }>;
+
+export type NumericDataValues = {
+  total_users: number;
+  total_reports: number;
+  pending_spots: number;
+  completed_reports: number;
+} | null;
+
+export type PieChartDataValues = Array<{
+  name: string;
+  y: number;
+}> | null;
+
+export type StockChartDataValues = Array<[number, number]> | null;

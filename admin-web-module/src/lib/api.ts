@@ -30,3 +30,15 @@ export const getUser = async () => {
   const response = await instance.get("/admin/getUser");
   return response.data;
 };
+
+export const getNumericData = () => {
+  return instance.get("/admin/dashboard/getNumericData");
+};
+
+export const getPieChartData = () => {
+  return instance.get("/admin/dashboard/getPieChartData");
+};
+
+export const getStockChartData = () => {
+  return instance.get("/admin/dashboard/getStockChartData");
+};

@@ -17,9 +17,9 @@ const numericCards: NumericCards = [
     key: "total_reports",
   },
   {
-    name: "Pending Spots",
+    name: "Pending Reports",
     icon: <PendingActionsIcon />,
-    key: "pending_spots",
+    key: "pending_reports",
   },
   {
     name: "Completed Reports",
