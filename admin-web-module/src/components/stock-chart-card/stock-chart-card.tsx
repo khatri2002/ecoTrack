@@ -35,7 +35,7 @@ const StockChartCard = ({ stockChartDataValues }: StockChartCardProps) => {
   };
 
   return (
-    <div className="col-span-2 border rounded-xl p-3 bg-white">
+    <div className="col-span-1 lg:col-span-2 border rounded-xl p-3 bg-white">
       <HighchartsReact
         highcharts={Highcharts}
         constructorType={"stockChart"}
